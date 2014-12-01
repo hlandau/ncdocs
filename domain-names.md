@@ -1,10 +1,18 @@
-Namecoin: Domain Names 3.0
-==========================
+Namecoin: Domain Names
+======================
 
-This is a draft specification under development. It has no official endorsement
-by the Namecoin project. Do not use it; instead, use the Domain Names 2.0
-specification published on the Namecoin wiki.
+This is a draft specification. It has no official endorsement by the Namecoin
+project. Do not use it; instead, use the Domain Names 2.0 specification
+published on the Namecoin wiki.
 
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this document are to be
+interpreted as described in RFC 2119.
+
+This document is released into the public domain.
+
+Introduction
+------------
 A Namecoin domain name is a domain name published under the .bit TLD. This is
 accomplished by storing a key-value pair in the Namecoin key-value database.
 
@@ -47,6 +55,11 @@ therefore incorporates by reference RFC 7159, which specifies JSON.
 
 The JSON object SHOULD be encoded as compactly as possible, without unnecessary
 whitespace.
+
+No particular limit is imposed on the length of the encoded JSON value.
+However, the Namecoin system itself imposes limitations, which must be respected
+by values. Currently, values must not exceed 520 bytes in size. This limit may
+be increased in the future.
 
 ### Notes on JSON
 
@@ -123,44 +136,44 @@ specified. The key name to be used for a given item is shown first, in quotes.
 
       Examples:
 
-        "map": {}
+          "map": {}
 
-        "map": {
-          "www": {
-            "ip": "192.0.2.1"
+          "map": {
+            "www": {
+              "ip": "192.0.2.1"
+            }
           }
-        }
 
-        "map": {
-          "www": "192.0.2.1"
-        }
-
-        "map": {                    // This is equivalent to "ip": "192.0.2.2"
-          "ip": "192.0.2.2"         // Takes precedence
-          "": {
-            "ip": "192.0.2.1"       // Ignored
+          "map": {
+            "www": "192.0.2.1"
           }
-        }
 
-        "map": {                    // This is equivalent to "ip": "192.0.2.1"
-          "": {
-            "ip": "192.0.2.1"
+          "map": {                    // This is equivalent to "ip": "192.0.2.2"
+            "ip": "192.0.2.2"         // Takes precedence
+            "": {
+              "ip": "192.0.2.1"       // Ignored
+            }
           }
-        }
+
+          "map": {                    // This is equivalent to "ip": "192.0.2.1"
+            "": {
+              "ip": "192.0.2.1"
+            }
+          }
 
       The following example forms are NOT valid:
 
-        "map": []
-        "map": "192.0.2.1"
-        "map": {
-          "$": "192.0.2.1"
-        }
-        "map": {
-          "a.b": "192.0.2.1"
-        }
-        "map": {
-          "www*": "192.0.2.1"
-        }
+          "map": []
+          "map": "192.0.2.1"
+          "map": {
+            "$": "192.0.2.1"
+          }
+          "map": {
+            "a.b": "192.0.2.1"
+          }
+          "map": {
+            "www*": "192.0.2.1"
+          }
 
   - "import": Used to import data from the value of another Namecoin key-value pair
     identified by its key. The logical contents of the Domain Name Object which
@@ -181,23 +194,23 @@ specified. The key name to be used for a given item is shown first, in quotes.
     For example, the following Domain Name Object has an import recursion
     degree of zero:
 
-      {}
+        {}
 
     The following Domain Name Object has an import recursion degree of one:
 
-      {"import":"d/example2"}
-      // The value for d/example2 is {}
+        {"import":"d/example2"}
+        // The value for d/example2 is {}
 
     The following Domain Name Object has an import recursion degree of two:
 
-      {"import":"d/example2"}
-      // The value for d/example2 is {"import":"d/example3"}
-      // The value for d/example3 is {}
+        {"import":"d/example2"}
+        // The value for d/example2 is {"import":"d/example3"}
+        // The value for d/example3 is {}
 
     The following Domain Name Object also has an import recursion degree of two:
 
-      {"import":["d/example2", "d/example3"]}
-      // The value for d/example2 and d/example3 is {}
+        {"import":["d/example2", "d/example3"]}
+        // The value for d/example2 and d/example3 is {}
 
     Implementations MUST support an import recursion degree of at least four.
 
@@ -291,10 +304,10 @@ specified. The key name to be used for a given item is shown first, in quotes.
 
     Examples:
 
-      "delegate": "d/example",
-      "delegate": ["d/example"],
-      "delegate": ["d/example", "www"],
-      "delegate": ["d/example", "london.england.uk"],
+        "delegate": "d/example",
+        "delegate": ["d/example"],
+        "delegate": ["d/example", "www"],
+        "delegate": ["d/example", "london.england.uk"],
 
 #### DNS-Compatible Records
 
@@ -320,18 +333,18 @@ specified. The key name to be used for a given item is shown first, in quotes.
 
     Examples:
 
-      "ip": []
-      "ip": ["192.0.2.1"]
-      "ip": ["192.0.2.1", "192.0.2.2"]
-      "ip": "192.0.2.1"
+        "ip": []
+        "ip": ["192.0.2.1"]
+        "ip": ["192.0.2.1", "192.0.2.2"]
+        "ip": "192.0.2.1"
 
     The following example forms are NOT valid:
 
-      "ip": {}
-      "ip": ["192.000.002.001"]
-      "ip": ["192.0.2.001"]
-      "ip": ["3221225985"]
-      "ip": [3221225985]
+        "ip": {}
+        "ip": ["192.000.002.001"]
+        "ip": ["192.0.2.001"]
+        "ip": ["3221225985"]
+        "ip": [3221225985]
 
   - "ip6": Used to specify zero or more IPv6 addresses. This item shall map to
     one or more DNS resource records of type "AAAA", and is semantically
@@ -354,17 +367,17 @@ specified. The key name to be used for a given item is shown first, in quotes.
 
     Examples:
 
-      "ip6": []
-      "ip6": ["2001::beef"]
-      "ip6": ["2001::dead", "2001::beef"]
-      "ip6": "2001::beef"
-      "ip6": "::beef:192.0.2.1"
+        "ip6": []
+        "ip6": ["2001::beef"]
+        "ip6": ["2001::dead", "2001::beef"]
+        "ip6": "2001::beef"
+        "ip6": "::beef:192.0.2.1"
 
     The following example forms are NOT valid:
 
-      "ip6": {}
-      "ip6": "2001::bxxf"
-      "ip6": ["::00000:beef"]
+        "ip6": {}
+        "ip6": "2001::bxxf"
+        "ip6": ["::00000:beef"]
 
   - "alias": Used to specify a canonical name for which the current name is an
     alias.  This item shall map to one DNS resource record of type "CNAME", and
@@ -379,12 +392,12 @@ specified. The key name to be used for a given item is shown first, in quotes.
 
     Examples:
 
-      "alias": "example.com."
+        "alias": "example.com."
 
     The following example forms are NOT valid:
 
-      "alias": "ex$ample.com."
-      "alias": ["a.example.com.", "b.example.com."]
+        "alias": "ex$ample.com."
+        "alias": ["a.example.com.", "b.example.com."]
 
   - "translate": Used to specify a name for which the current name and all names under
     it are delegated. This item shall map to one DNS resource record of type "DNAME",
@@ -399,12 +412,12 @@ specified. The key name to be used for a given item is shown first, in quotes.
 
     Examples:
 
-      "translate": "example.com."
+        "translate": "example.com."
 
     The following example forms are NOT valid:
 
-      "translate": "ex$ample.com."
-      "translate": ["a.example.com.", "b.example.com."]
+        "translate": "ex$ample.com."
+        "translate": ["a.example.com.", "b.example.com."]
 
   - "ns": Used to specify zero or more nameservers which are authoritative for the
     current name and all names under it (barring further delegations thereunder).
@@ -430,15 +443,15 @@ specified. The key name to be used for a given item is shown first, in quotes.
 
     Examples:
 
-      "ns": []
-      "ns": ["ns1.example.com.", "ns2.example.com."]
-      "ns": "ns1.example.com."
+        "ns": []
+        "ns": ["ns1.example.com.", "ns2.example.com."]
+        "ns": "ns1.example.com."
 
     The following example forms are NOT valid:
 
-      "ns": {}
-      "ns": "ns$1.example.com."
-      "ns": "ns1.example.com. ns2.example.com."
+        "ns": {}
+        "ns": "ns$1.example.com."
+        "ns": "ns1.example.com. ns2.example.com."
 
   - "ds": Used to identify DNSSEC signing keys for a delegation as expressed by
     corresponding NS records. This item shall map to zero or more DNS resource records
@@ -477,15 +490,15 @@ specified. The key name to be used for a given item is shown first, in quotes.
 
     Examples:
 
-      "ds": []
-      "ds": [[12345,8,1,"EfatjsUqKYSrqv18O1FlA3hcIHI="]]
-      "ds": [[12345,8,1,"EfatjsUqKYSrqv18O1FlA3hcIHI="],[12345,8,2,"LXEWQrcmsEQBYnyp+6wy9chTD7GQPMTbAiWHF5IaSIE="]]
+        "ds": []
+        "ds": [[12345,8,1,"EfatjsUqKYSrqv18O1FlA3hcIHI="]]
+        "ds": [[12345,8,1,"EfatjsUqKYSrqv18O1FlA3hcIHI="],[12345,8,2,"LXEWQrcmsEQBYnyp+6wy9chTD7GQPMTbAiWHF5IaSIE="]]
 
     The following example forms are NOT valid:
 
-      "ds": {}
-      "ds": [[]]
-      "ds": [12345,8,1,"11f6ad8ec52a2984abaafd7c3b516503785c2072"]
+        "ds": {}
+        "ds": [[]]
+        "ds": [12345,8,1,"11f6ad8ec52a2984abaafd7c3b516503785c2072"]
 
     The following example form is literally valid, however the Digest field has been erroneously
     expressed in hexadecimal format rather than base64 format. Since the field length is a multiple
@@ -493,7 +506,7 @@ specified. The key name to be used for a given item is shown first, in quotes.
     length for the given Digest Type. However, it is not the job of implementations to validate this
     and implementations MUST NOT do so.
 
-      "ds": [[12345,8,1,"11f6ad8ec52a2984abaafd7c3b516503785c2072"]]
+        "ds": [[12345,8,1,"11f6ad8ec52a2984abaafd7c3b516503785c2072"]]
 
   - "service": TODO
 
@@ -502,6 +515,8 @@ specified. The key name to be used for a given item is shown first, in quotes.
   - "txt": TODO
 
   - "tls": TODO
+
+  - "loc": TODO
 
 ### Non-DNS Item Types
 
@@ -662,9 +677,16 @@ there are doubtless other potential issues not listed here.
 Deprecated Item Types
 ---------------------
 
-  - "tls":
+  - "tls": A previous format for the "tls" item type was proposed which strips out
+    some of the fields incorporated in the TLSA DNS record type. Since this precludes
+    parity with DNS, use of this format is highly undesirable.
 
-  - "loc":
+    The proposed format was also inconsistent with the "service" (SRV) specification
+    in its denotation of subdomains. ("service" uses `[[appName, transportName, ...]]`
+    whereas the proposed "tls" format used an object mapping transport protocols to
+    objects mapping port numbers to arrays of incomplete TLSA-ish records. This
+    scheme has further problems as JSON does not support non-string keys, which
+    means the port numbers had to be denoted as strings.)
 
   - "email": This is nominally intended to specify an e. mail address for insertion
     into the hostmaster field of a SOA record. However, this assumes that each
@@ -684,3 +706,17 @@ Deprecated Item Types
 
   - "fingerprint": This was used to express a certificate fingerprint for a
     service provided at a domain. It is deprecated in favour of the "tls" item type.
+
+Possible Future Directions
+--------------------------
+
+  - msgpack encoding: Aside from the more compact encoding, an advantage of msgpack
+    is its support for binary strings, both in terms of efficient encoding (so no base64)
+    and the semantic distinction. (Since JSON supports only strings, there is no schema-free
+    way to distinguish between a logical text string and a logical binary string represented
+    as a base64-encoded JSON string.)
+
+  - Compression: Since values are not long, anything heavier than zlib is likely to be
+    counterproductive. Thus if compression were supported, the choice would be between
+    zlib and lighter formats such as Snappy or LZ4.
+
