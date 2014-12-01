@@ -1,3 +1,23 @@
+**Table of Contents**
+
+- [Namecoin: Domain Names](#namecoin-domain-names)
+  - [Introduction](#introduction)
+  - [Keys](#keys)
+  - [Values](#values)
+    - [Notes on JSON](#notes-on-json)
+    - [The Domain Name Object Schema](#the-domain-name-object-schema)
+      - [Abstract Constructs](#abstract-constructs)
+      - [DNS-Compatible Records](#dns-compatible-records)
+    - [Non-DNS Item Types](#non-dns-item-types)
+    - [Administrative Constructs](#administrative-constructs)
+  - [Interpretation of DNS Names](#interpretation-of-dns-names)
+  - [The WHOIS Entity Schema](#the-whois-entity-schema)
+  - [Definitions of Valid Names](#definitions-of-valid-names)
+  - [Notes on DNS Subtleties](#notes-on-dns-subtleties)
+  - [Error Recovery Considerations](#error-recovery-considerations)
+  - [Deprecated Item Types](#deprecated-item-types)
+  - [Possible Future Directions](#possible-future-directions)
+
 Namecoin: Domain Names
 ======================
 
