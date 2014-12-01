@@ -234,6 +234,9 @@ specified. The key name to be used for a given item is shown first, in quotes.
       that string shall constitute the Subdomain Selector. Otherwise, the
       Subdomain Selector shall be taken to be the empty string.
 
+      This form is the canonical form when the Subdomain Selector is
+      explicitly specified.
+
       If there are more than two items in the array, any further items are
       ignored.
 
@@ -300,6 +303,9 @@ specified. The key name to be used for a given item is shown first, in quotes.
       a string expressing the Subdomain Selector, which is processed as described
       in the specification for "import". If the second item is not present, the
       Subdomain Selector is taken as "".
+
+      This form is the canonical form when the Subdomain Selector is explicitly
+      specified (i.e. the second item is present).
 
     - A string. When this form is encountered, it shall be substituted with an
       array containing that string and processed as though that was what was
@@ -632,6 +638,12 @@ specified. The key name to be used for a given item is shown first, in quotes.
         behaviour expected by many formats which use TXT records, such as
         DomainKeys.
 
+        If the sequence of strings logically represented by this record
+        consists of a sequence of strings of length 255 bytes optionally
+        terminated by a string with a length of less than 255 bytes, then this
+        form is the canonical form. Otherwise, the above form (the
+        array-of-arrays form) is the canonical form.
+
     - A string. Where this form is encountered, it shall be substituted with an
       array containing that string and be processed as though that was what was
       encountered, as per the above form.
@@ -881,4 +893,5 @@ Possible Future Directions
   - Compression: Since values are not long, anything heavier than zlib is likely to be
     counterproductive. Thus if compression were supported, the choice would be between
     zlib and lighter formats such as Snappy or LZ4.
+
 
