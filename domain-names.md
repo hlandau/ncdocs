@@ -1,3 +1,16 @@
+Namecoin: Domain Names
+======================
+
+This is a draft specification. It has no official endorsement by the Namecoin
+project. Do not use it; instead, use the Domain Names 2.0 specification
+published on the Namecoin wiki.
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this document are to be
+interpreted as described in RFC 2119.
+
+This document is released into the public domain.
+
 **Table of Contents**
 
 - [Namecoin: Domain Names](#namecoin-domain-names)
@@ -17,19 +30,6 @@
   - [Error Recovery Considerations](#error-recovery-considerations)
   - [Deprecated Item Types](#deprecated-item-types)
   - [Possible Future Directions](#possible-future-directions)
-
-Namecoin: Domain Names
-======================
-
-This is a draft specification. It has no official endorsement by the Namecoin
-project. Do not use it; instead, use the Domain Names 2.0 specification
-published on the Namecoin wiki.
-
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in RFC 2119.
-
-This document is released into the public domain.
 
 Introduction
 ------------
