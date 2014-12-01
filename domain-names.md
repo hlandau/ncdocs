@@ -112,6 +112,9 @@ specified. The key name to be used for a given item is shown first, in quotes.
           single unqualified label and so MUST NOT contain any dots (ASCII
           '.').
 
+          (Note that the label need not be a valid hostname; for example, it
+          may contain underscores.)
+
         - The string "*", representing a wildcard subdomain as supported by
           DNS.
 
@@ -508,13 +511,146 @@ specified. The key name to be used for a given item is shown first, in quotes.
 
         "ds": [[12345,8,1,"11f6ad8ec52a2984abaafd7c3b516503785c2072"]]
 
-  - "service": TODO
+  - "service": Used to identify zero or more service location records. This
+    item shall map to zero or more DNS resource records of type "SRV", as
+    defined in RFC 2782, and is semantically equivalent to that set of resource
+    records (once having applied the record name transformation described
+    below).
+
+    The value for this item shall be of the following form:
+
+    - An array of zero or more items. Each such item shall represent a SRV record,
+      and shall be of the following form:
+
+      - An array of at least six items.
+
+        The first item shall be a string expressing the application name (the
+        “Service” in RFC 2782 parlance, but without the leading underscore).
+
+        The second item shall be a string expressing the transport protocol
+        name (the “Protocol” in RFC 2782 parlance, again without the leading
+        underscore.)
+
+        The third item shall be a non-negative integer expressible in 16 bits
+        expressing the Priority of the SRV record.
+
+        The fourth item shall be a non-negative integer expressible in 16 bits
+        expressing the Weight of the SRV record.
+
+        The fifth item shall be a non-negative integer expressible in 16 bits
+        expressing the Port Number of the SRV record.
+
+        The sixth item shall be a string expressing a DNS name expressing
+        the Target of the SRV record.
+
+        Any additional items in the array beyond the first six shall be
+        ignored.
+
+    The "service" item is processed by taking the SRV records expressed by it
+    and, for each of them, prepending to the DNS record's name the string
+    `_AppProto._TransProto.` where `AppProto` and `TransProto` are the values
+    as specified in the above form. Thus the correct name for each SRV record
+    is formed automatically from the specified values, without having to use
+    "map" items.
+  
+  - "tls": Used to identify zero or more TLS anchor records. This item shall
+    map to zero or more DNS resource records of type "TLSA", as defined in RFC
+    6698, and is semantically equivalent to that set of resource records (once
+    having applied the record name transformation described below).
+
+    The value for this item shall be of the following form:
+
+    - An array of zero or more items. Each such item shall represent a TLSA record,
+      and shall be of the following form:
+
+      - An array of at least six items.
+
+        The first item shall be a string (or an integer, in which case it is
+        converted to the string which is the decimal representation of it without
+        leading zeroes) expressing the port number.
+
+        The second item shall be a string expressing the transport protocol name.
+
+        The third item shall be a non-negative integer expressible in 8 bits
+        expressing the Certificate Usage Field of the TLSA record (RFC 6698 s. 2.1.1).
+
+        The fourth item shall be a non-negative integer expressible in 8 bits
+        expressing the Selector Field of the TLSA record (RFC 6698 s. 2.1.2).
+
+        The fifth item shall be a non-negative integer expressible in 8 bits
+        expressing the Matching Type Field of the TLSA record (RFC 6698 s. 2.1.3).
+
+        The sixth item shall be a string containing the base64 encoding of the
+        logical encoding of the Certificate Association Data Field of the TLSA record (RFC 6698 s. 2.1.4).
+
+        The textual expression of this field in RFC 6698 uses hex encoding. Therefore this
+        field must be converted to the correct form by decoding it and reencoding it
+        using base64. The base64 encoding shall be performed as described in RFC 4648.
+        The encoded string shall be in canonical form as specified by RFC 4648 s. 3.5.
+        The standard alphabet shall be used, as described in RFC 4648 s. 4. The "URL-safe"
+        encoding shall NOT be used.
+
+        Any additional items in the array beyond the first six shall be ignored.
+
+    The "tls" item is processed by taking the TLSA records expressed by it and,
+    for each of them, prepending to the DNS record's name the string
+    `_PortNumber._TransProto.` where `PortNumber` and `TransProto` are the
+    values as specified in the above form. Thus the correct name for each TLSA
+    record is formed automatically from the specified values, without having to
+    use "map" items.
+
+  - "txt": Used to identify zero or more text data records. This item shall map
+    to zero or more DNS resource records of type "TXT", and is semantically
+    equivalent to that set of resource records.
+
+    It is an important subtlety to the specification for the DNS TXT record type
+    that the TXT format actually expresses a sequence of one or more text strings,
+    each of which must not exceed 255 bytes in length.
+
+    The most common use of the TXT record type appears to consider such records
+    to logically represent the string formed by concatenating those component
+    strings. For example, DomainKeys, which uses TXT records to store signing key
+    identities in DNS, does this, as the key data may exceed 255 bytes in length.
+
+    The value for this item shall be of one of the following forms:
+
+    - An array of zero or more items. Each such item shall represent a TXT record,
+      and shall take one of the following forms:
+
+      - An array of one or more strings. Each such string shall not exceed 255
+        bytes in its UTF-8 representation.
+
+      - A string. Where this form is encountered, it shall be substituted with
+        an array of one or more strings, such that all but the last string
+        in the array is 255 bytes in the length of its UTF-8 representation,
+        and be processed as though that was what was encountered, as per the above
+        form.
+
+        In other words, the string is chopped up so that it can be expressed as
+        a sequence of strings each up to 255 bytes in length, such that the
+        concatenation of those strings forms the original string. This is the
+        behaviour expected by many formats which use TXT records, such as
+        DomainKeys.
+
+    - A string. Where this form is encountered, it shall be substituted with an
+      array containing that string and be processed as though that was what was
+      encountered, as per the above form.
+      or more strings. Each such string shall not exceed 255 bytes in its UTF-8
+      representation.
+
+    Examples:
+
+        "txt": "This is a string."
+        "txt": ["This is a string.", "Another string."]
+        "txt": [["This", "is", "a", "string."], "Another string."]
+
+    The following example forms are NOT valid:
+
+        "txt": {}
+        "txt": ["This is a string.", 1]
+        "txt": [["(a string longer than 255 bytes)"]]
 
   - "mx": TODO
-
-  - "txt": TODO
-
-  - "tls": TODO
 
   - "loc": TODO
 
@@ -556,7 +692,8 @@ specified. The key name to be used for a given item is shown first, in quotes.
         nameserver or other DNS-related issues. The value shall comply with the
         WHOIS Entity Schema as described in this document.
 
-    - A freeform string. This is necessary for compatibility purposes.
+    - A value directly complying with the WHOIS Entity Schema. This can be used
+      where one entity takes on all three roles.
 
 Interpretation of DNS Names
 ---------------------------
@@ -657,7 +794,7 @@ A hostname is a particular kind of DNS name following stricter rules. Namely,
 every label in a hostname must be a valid host label. A label is a valid host
 label if it complies with the following:
 
-  - it matches the POSIX regexp `^([a-z0-9]+-)*[a-z0-9]+$`, and;
+  - it matches the POSIX regexp `^(xn--)?([a-z0-9]+-)*[a-z0-9]+$`, and;
 
   - it is a valid DNS label.
 
@@ -673,6 +810,31 @@ records below it are an exception. Since domains may rely on glue records
 correct processing of these cases is critical. In general a good understanding
 of DNS and its edge cases is necessary in implementing this specification, and
 there are doubtless other potential issues not listed here.
+
+Error Recovery Considerations
+-----------------------------
+Any domain name system has the capacity to operate as critical infrastructure.
+It is important that implementations not penalise names excessively for partial
+invalidity in their values. Where an error is encountered, it should be silently
+ignored and an attempt to process the remainder of the object should be made.
+
+For example, in the following example an invalid IP address is specified:
+
+    {
+      "ip": ["site", "192.0.2.1"]
+    }
+
+The "ip" item is not validly constructed, and so the Domain Name Object itself
+is not validly constructed. However, a resilient implementation will consider
+the domain to at least have the IP address (A record) of 192.0.2.1. This demonstrates
+a general principle in processing Domain Name Objects: semantic or form errors
+in an item should not penalize the processing of other items, and items which
+express multiple conceptual values should have as many of those values processed
+as possible.
+
+Because errors should not cause processing to stop, the outcome of processing
+should not vary based on whether the erroneous values are leading or trailing
+with regard to the valid data.
 
 Deprecated Item Types
 ---------------------
