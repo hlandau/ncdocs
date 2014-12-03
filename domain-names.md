@@ -21,8 +21,8 @@ This document is released into the public domain.
     - [The Domain Name Object Schema](#the-domain-name-object-schema)
       - [Abstract Constructs](#abstract-constructs)
       - [DNS-Compatible Records](#dns-compatible-records)
-    - [Non-DNS Item Types](#non-dns-item-types)
-    - [Administrative Constructs](#administrative-constructs)
+      - [Non-DNS Item Types](#non-dns-item-types)
+      - [Administrative Constructs](#administrative-constructs)
   - [Interpretation of DNS Names](#interpretation-of-dns-names)
   - [The WHOIS Entity Schema](#the-whois-entity-schema)
   - [Definitions of Valid Names](#definitions-of-valid-names)
@@ -734,7 +734,7 @@ example of an exception to this rule.)
 
         "loc": "10 Downing Street"
 
-### Non-DNS Item Types
+#### Non-DNS Item Types
 
   - "tor": Provides a Tor onion address.
   
@@ -753,7 +753,7 @@ example of an exception to this rule.)
     The value for this item shall take the form of a string containing a Freenet
     freesite key, e.g. "USK@0I8g...xbZ4,AQACAAE/Example/42/".
 
-### Administrative Constructs
+#### Administrative Constructs
 
   - "info": This optional item can be used to provide WHOIS-like information.
 
