@@ -682,7 +682,17 @@ specified. The key name to be used for a given item is shown first, in quotes.
         "txt": ["This is a string.", 1]
         "txt": [["(a string longer than 255 bytes)"]]
 
-  - "mx": TODO
+  - MX: MX records cannot be specified directly. Instead, where a domain name
+    provides a service using the "service" item type for a service with an
+    application name of "smtp" and a transport protocol name of "tcp" (`_smtp._tcp`),
+    implementations generating DNS records shall generate an MX record for each
+    endpoint specified for that service which specifies a port number of 25. Any
+    `_smtp._tcp` SRV record with a port number other than 25 is ignored. The MX
+    record shall be constructed using the priority and target fields of the
+    SRV record. The weight and port fields shall be discarded.
+
+    Implementations must still make the SRV records available in addition to the
+    MX records.
 
   - "loc": TODO
 
