@@ -117,6 +117,12 @@ A Domain Name Object Schema SHALL possess zero or more of the following items.
 Where each item is present, it MUST conform with the subschema for that item as
 specified. The key name to be used for a given item is shown first, in quotes.
 
+Except where otherwise specified, any item with a value of `null` shall be
+treated as being absent; that is, it will be processed as though it was not
+present in the object. Thus `null` is always a valid value for an item even
+though it is not explicitly mentioned herein. (See the "import" item for an
+example of an exception to this rule.)
+
 #### Abstract Constructs
 
   - "map": Used to express a Domain Name Object for a subdomain of the current
@@ -207,6 +213,20 @@ specified. The key name to be used for a given item is shown first, in quotes.
     object. The exception to this is where the specification for a specific
     type of item explicitly specifies an alternate merge rule, in which case
     that rule must be applied for items of that type.
+
+    Except where otherwise specified, for the purposes of precedence, an item
+    is considered to be present if it is specified in the object, regardless of
+    the semantic nullity expressed by the value. For example, an "ip" item with
+    an empty array as its value is considered to be present for the purposes
+    of precedence.
+    
+    This principle is extended to the value `null`; this constitutes an
+    exception to the previously stated general rule that an item with a value
+    of `null` is processed equivalently to the absence of that item. Thus an
+    item with a value of `null` is considered to be present for the purposes
+    of precedence. For example, if an imported domain specifies an item type of
+    "info", the importing domain can nullify this by adding an item type of
+    "info" with value `null`.
 
     It is permissible for an imported object to itself import other objects. However,
     a limitation on the degree of recursion is imposed. The degree of recursion is
