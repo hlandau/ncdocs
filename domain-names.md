@@ -667,8 +667,6 @@ specified. The key name to be used for a given item is shown first, in quotes.
     - A string. Where this form is encountered, it shall be substituted with an
       array containing that string and be processed as though that was what was
       encountered, as per the above form.
-      or more strings. Each such string shall not exceed 255 bytes in its UTF-8
-      representation.
 
     Examples:
 
@@ -694,7 +692,27 @@ specified. The key name to be used for a given item is shown first, in quotes.
     Implementations must still make the SRV records available in addition to the
     MX records.
 
-  - "loc": TODO
+  - "loc": Used to identify zero or more physical location records. This item
+    shall map to zero or more DNS resource records of type "LOC", and is
+    semantically equivalent to that set of resource records.
+
+    The value for this item shall be of one of the following forms:
+    
+    - An array of zero or more items. Each such item shall be a string conforming
+      to the textual format specified in RFC 1876 s. 3 for the type-specific data.
+
+    - A string. Where this form is encountered, it shall be substituted with an
+      array containing that string and be processed as though that was what as
+      encountered, as per the above form.
+
+    Examples:
+
+        "loc": []
+        "loc": "52 22 23.000 N 4 53 32.000 E -2.00m 0.00m 10000m 10m"
+
+    The following example forms are NOT valid:
+
+        "loc": "10 Downing Street"
 
 ### Non-DNS Item Types
 
