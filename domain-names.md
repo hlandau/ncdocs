@@ -882,49 +882,49 @@ Implementations are not required to implement these types. These formats are spe
 
         Any additional items in the array shall be ignored.
 
-    - "o": Used to opaquely express arbitrary DNS records. This item shall map
-      to zero or more DNS resource records, and is semantically equivalent to
-      that set of resource records.
+  - "o": Used to opaquely express arbitrary DNS records. This item shall map
+    to zero or more DNS resource records, and is semantically equivalent to
+    that set of resource records.
 
-      The value for this item shall be of the following form:
+    The value for this item shall be of the following form:
 
-      - An array of zero or more items. Each such item shall represent a DNS
-        resource record, and shall be of the following form:
+    - An array of zero or more items. Each such item shall represent a DNS
+      resource record, and shall be of the following form:
 
-        - An array of at least two items.
+      - An array of at least two items.
 
-          The first item shall be a non-negative integer expressible in 16 bits
-          expressing the resource record type number of the DNS resource record.
-          For example, specifying 16 would mean a TXT record.
+        The first item shall be a non-negative integer expressible in 16 bits
+        expressing the resource record type number of the DNS resource record.
+        For example, specifying 16 would mean a TXT record.
 
-          The second item shall be a string containing base64-encoded data
-          representing the type-specific resource record data in its binary form.
+        The second item shall be a string containing base64-encoded data
+        representing the type-specific resource record data in its binary form.
 
-          Any additional items in the array shall be ignored.
+        Any additional items in the array shall be ignored.
 
-      Each opaque DNS resource record expressed MUST be processed only where the
-      type of resource record it expresses is not one of the prohibited types.
+    Each opaque DNS resource record expressed MUST be processed only where the
+    type of resource record it expresses is not one of the prohibited types.
 
-      The prohibited types are:
+    The prohibited types are:
 
-        - NS    (2)  -- Use "ns".
-        - CNAME (5)  -- Use "alias".
-        - SOA   (6)
-        - DNAME (39) -- Use "translate".
-        - RRSIG (46)
-        - NSEC  (47)
-        - NSEC3 (50)
+      - NS    (2)  -- Use "ns".
+      - CNAME (5)  -- Use "alias".
+      - SOA   (6)
+      - DNAME (39) -- Use "translate".
+      - RRSIG (46)
+      - NSEC  (47)
+      - NSEC3 (50)
 
-      Discussion: This item type is experimental. It is possible that allowing
-      arbitrary DNS resource record types to be placed in the `.bit` zone may
-      constitute a security risk. Since no currently operated public TLD
-      registry allows arbitrary records to be placed in their zone (only NS and
-      DS records and A/AAAA glue records), there is little data on the
-      practical implications of this mode. Therefore the prohibited types list
-      is specified to provide at least minimal protection against resource
-      record types with particularly infrastructural significance. All of the
-      prohibited types listed above are processed specially by DNS resolvers
-      and/or authoritative servers.
+    Discussion: This item type is experimental. It is possible that allowing
+    arbitrary DNS resource record types to be placed in the `.bit` zone may
+    constitute a security risk. Since no currently operated public TLD
+    registry allows arbitrary records to be placed in their zone (only NS and
+    DS records and A/AAAA glue records), there is little data on the
+    practical implications of this mode. Therefore the prohibited types list
+    is specified to provide at least minimal protection against resource
+    record types with particularly infrastructural significance. All of the
+    prohibited types listed above are processed specially by DNS resolvers
+    and/or authoritative servers.
 
 Interpretation of DNS Names
 ---------------------------
