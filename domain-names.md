@@ -29,7 +29,8 @@ This document is released into the public domain.
   - [Definitions of Valid Names](#definitions-of-valid-names)
   - [Notes on DNS Subtleties](#notes-on-dns-subtleties)
   - [Error Recovery Considerations](#error-recovery-considerations)
-  - [Deprecated Item Types](#deprecated-item-types)
+  - [Previously Deprecated Item Types](#previously-deprecated-item-types)
+  - [Newly Deprecated Item Types](#newly-deprecated-item-types)
   - [Possible Future Directions](#possible-future-directions)
 
 Introduction
@@ -1074,8 +1075,19 @@ scheme described in RFC 4648. Base64 encoding and decoding MUST be performed
 as specified therein. Encoded base64 strings MUST be in canonical form as specified
 in RFC 4648 s. 3.5. The standard alphabet shall be used, as described in RFC 4648 s. 4. The "URL-safe" encoding MUST NOT be used.
 
-Deprecated Item Types
----------------------
+Previously Deprecated Item Types
+--------------------------------
+
+The following item types were already deprecated before this document. They
+remain deprecated.
+
+  - "fingerprint": This was used to express a certificate fingerprint for a
+    service provided at a domain. It is deprecated in favour of the "tls" item type.
+
+Newly Deprecated Item Types
+---------------------------
+
+The following item types are deprecated by this document.
 
   - "tls": A previous format for the "tls" item type was proposed which strips out
     some of the fields incorporated in the TLSA DNS record type. Since this precludes
@@ -1087,6 +1099,13 @@ Deprecated Item Types
     objects mapping port numbers to arrays of incomplete TLSA-ish records. This
     scheme has further problems as JSON does not support non-string keys, which
     means the port numbers had to be denoted as strings.)
+
+    As of writing, just 14 domains are attempting to make use of the (old)
+    "tls" format. Of those domains, only six do so correctly, one of which has
+    other configuration issues; two erroneously specify integers and not
+    strings for the port number, and six appear to use an alternate format:
+
+      "tls": { "sha1": ["12:34:56:AB:CD:EF:..."], "enforce": "self" }
 
   - "email": This is nominally intended to specify an e. mail address for insertion
     into the hostmaster field of a SOA record. However, this assumes that each
@@ -1103,9 +1122,6 @@ Deprecated Item Types
     information can be obtained by WHOIS information provided by the "info" item type,
     or via the standard e. mail address of hostmaster@, which should always be supported
     anyway.
-
-  - "fingerprint": This was used to express a certificate fingerprint for a
-    service provided at a domain. It is deprecated in favour of the "tls" item type.
 
   - "spf": Attempts to transition to the use of a special SPF DNS resource
     record type for the purposes of publishing SPF information have mostly
