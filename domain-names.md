@@ -23,6 +23,7 @@ This document is released into the public domain.
       - [DNS-Compatible Records](#dns-compatible-records)
       - [Non-DNS Item Types](#non-dns-item-types)
       - [Administrative Constructs](#administrative-constructs)
+      - [Experimental DNS-Compatible Item Types](#experimental-dns-compatible-item-types)
   - [Interpretation of DNS Names](#interpretation-of-dns-names)
   - [The WHOIS Entity Schema](#the-whois-entity-schema)
   - [Definitions of Valid Names](#definitions-of-valid-names)
@@ -530,12 +531,9 @@ example of an exception to this rule.)
         of the logical content of the Digest field (RFC 4034 s. 5.1.4) of the corresponding
         DS record.
 
-        The textual expression of this field in RFC 4034 uses hex encoding. Therefore this
-        field must be converted to the correct form by decoding it and reencoding it 
-        using base64. The base64 encoding shall be performed as described in RFC 4648.
-        The encoded string shall be in canonical form as specified in RFC 4648 s. 3.5.
-        The standard alphabet shall be used, as described in RFC 4648 s. 4. The "URL-safe"
-        encoding shall NOT be used.
+        The textual expression of this field in RFC 4034 uses hex encoding.
+        Therefore this field must be converted to the correct form by decoding
+        it and reencoding it using base64.
 
     Examples:
 
@@ -598,7 +596,7 @@ example of an exception to this rule.)
     as specified in the above form. Thus the correct name for each SRV record
     is formed automatically from the specified values, without having to use
     "map" items.
-  
+
   - "tls": Used to identify zero or more TLS anchor records. This item shall
     map to zero or more DNS resource records of type "TLSA", as defined in RFC
     6698, and is semantically equivalent to that set of resource records (once
@@ -631,10 +629,7 @@ example of an exception to this rule.)
 
         The textual expression of this field in RFC 6698 uses hex encoding. Therefore this
         field must be converted to the correct form by decoding it and reencoding it
-        using base64. The base64 encoding shall be performed as described in RFC 4648.
-        The encoded string shall be in canonical form as specified by RFC 4648 s. 3.5.
-        The standard alphabet shall be used, as described in RFC 4648 s. 4. The "URL-safe"
-        encoding shall NOT be used.
+        using base64.
 
         Any additional items in the array beyond the first six shall be ignored.
 
@@ -774,6 +769,162 @@ example of an exception to this rule.)
 
     - A value directly complying with the WHOIS Entity Schema. This can be used
       where one entity takes on all three roles.
+
+#### Experimental DNS-Compatible Item Types
+
+Implementations are not required to implement these types. These formats are specified here to provide a suggested format in case anyone wishes to implement types for the corresponding DNS resource record types, not necessarily as an advocation of their use.
+
+  - "ptr": Used to identify zero or more name pointer records. This item shall
+    map to zero or more DNS resource records of type "PTR", as defined in RFC
+    2915, and is semantically equivalent to that set of resource records.
+
+    The value for this item shall be of one of the the following forms:
+
+    - An array of zero or more items. Each such item shall be a string
+      representing a PTR record and containing a valid domain name, which
+      constitutes the value of that record.
+
+    - A string. Where this form is encountered, it shall be substituted with an
+      array containing that string and be processed as though that was what as
+      encountered, as per the above form.
+
+    The conventional use of PTR records is in reverse DNS, which is not applicable
+    to Namecoin. However, PTR records may be used for other purposes.
+
+  - "naptr": Used to identify zero or more naming authority pointer records.
+    This item shall map to zero or more DNS resource records of type "NAPTR",
+    as defined in RFC 2915, and is semantically equivalent to that set of
+    resource records.
+
+    The value for this item shall be of the following form:
+
+    - An array of zero or more items. Each such item shall represent a NAPTR
+      record, and shall be of the following form:
+
+      - An array of at least six items.
+
+        The first item shall be a non-negative integer expressible in 16 bits
+        expressing the Order of the NAPTR record.
+
+        The second item shall be a non-negative integer expressible in 16 bits
+        expressing the Preference of the NAPTR record.
+
+        The third item shall be a string the UTF-8 representation of which shall
+        not exceed 255 bytes, expressing the Flags field of the NAPTR record.
+
+        The fourth item shall be a string the UTF-8 representation of which shall
+        not exceed 255 bytes, expressing the Service field of the NAPTR record.
+
+        The fifth item shall be a string the UTF-8 representation of which shall
+        not exceed 255 bytes, expressing the Regexp field of the NAPTR record.
+
+        The sixth item shall be a string containing a valid domain name,
+        expressing the Replacement field of the NAPTR record.
+
+        Any additional items in the array beyond the first six shall be ignored.
+
+    EXPERIMENTAL. No custom merge rule is currently specified for this item type,
+    but one is probably necessary for proper use.
+
+  - "a6": Used to identify zero or more IPv6 Anchor records. This item shall
+    map to zero or more DNS resource records of type "A6", as defined in RFC 2874,
+    and is semantically equivalent to that set of resource records.
+
+    The value for this item shall be of the following form:
+
+    - An array of zero or more items. Each such item shall represent an A6 record,
+      and shall be of the following form:
+
+      - An array of at least two items.
+
+        The first item shall be an integer in the range 0 <= x <= 128
+        expressing the Prefix Length of the A6 record.
+
+        The second item shall be a string representing an IPv6 address
+        expressing the Address Suffix of the A6 record. If the Prefix Length is
+        128, this may be specified as `null`.
+
+        If the Prefix Length is not zero, there shall be a third item which shall
+        be a string containing a valid domain name expressing the Prefix Name of
+        the A6 record. If the Prefix Length is zero, this field shall be absent
+        or shall be specified as `null`.
+
+        Any additional items in the array shall be ignored.
+
+    HISTORIC. The A6 record is no longer recommended for use.
+
+  - "sshfp": Used to identify zero or more SSH server key fingerprints. This item
+    shall map to zero or more DNS resource records of type "SSHFP", as defined in
+    RFC 4255, and is semantically equivalent to that set of resource records.
+
+    The value for this item shall be of the following form:
+
+    - An array of zero or more items. Each such item shall represent a SSHFP record,
+      and shall be of the following form:
+
+      - An array of at least three items.
+
+        The first item shall be a non-negative integer expressible in 8 bits
+        expressing the Algorithm Number of the corresponding SSHFP record (RFC
+        4255, s. 3.1.1).
+
+        The second item shall be a non-negative integer expressible in 8 bits
+        expressing the Fingerprint Type of the corresponding SSHFP record (RFC
+        4255, s. 3.1.2).
+
+        The third item shall be a string containing the base64 encoding of the
+        logical content of the Fingerprint field of the corresponding SSHFP
+        record (RFC 4255, s. 3.1.3).
+
+        The textual expression of this field in RFC 4255 uses hex encoding. There
+        this field must be converted to the correct form by decoding it and
+        reencoding it using base64.
+
+        Any additional items in the array shall be ignored.
+
+    - "o": Used to opaquely express arbitrary DNS records. This item shall map
+      to zero or more DNS resource records, and is semantically equivalent to
+      that set of resource records.
+
+      The value for this item shall be of the following form:
+
+      - An array of zero or more items. Each such item shall represent a DNS
+        resource record, and shall be of the following form:
+
+        - An array of at least two items.
+
+          The first item shall be a non-negative integer expressible in 16 bits
+          expressing the resource record type number of the DNS resource record.
+          For example, specifying 16 would mean a TXT record.
+
+          The second item shall be a string containing base64-encoded data
+          representing the type-specific resource record data in its binary form.
+
+          Any additional items in the array shall be ignored.
+
+      Each opaque DNS resource record expressed MUST be processed only where the
+      type of resource record it expresses is not one of the prohibited types.
+
+      The prohibited types are:
+
+        - NS    (2)  -- Use "ns".
+        - CNAME (5)  -- Use "alias".
+        - SOA   (6)
+        - DNAME (39) -- Use "translate".
+        - RRSIG (46)
+        - NSEC  (47)
+        - NSEC3 (50)
+
+      Discussion: This item type is experimental. It is possible that allowing
+      arbitrary DNS resource record types to be placed in the `.bit` zone may
+      constitute a security risk. Since no currently operated public TLD
+      registry allows arbitrary records to be placed in their zone (only NS and
+      DS records and A/AAAA glue records), there is little data on the
+      practical implications of this mode. Therefore the prohibited types list
+      is specified to provide at least minimal protection against resource
+      record types with particularly infrastructural significance. All of the
+      prohibited types listed above are processed specially by DNS resolvers
+      and/or authoritative servers.
 
 Interpretation of DNS Names
 ---------------------------
@@ -916,6 +1067,13 @@ Because errors should not cause processing to stop, the outcome of processing
 should not vary based on whether the erroneous values are leading or trailing
 with regard to the valid data.
 
+Definition of Base64
+--------------------
+All references to base64 encoding in this document refer to the base64 encoding
+scheme described in RFC 4648. Base64 encoding and decoding MUST be performed
+as specified therein. Encoded base64 strings MUST be in canonical form as specified
+in RFC 4648 s. 3.5. The standard alphabet shall be used, as described in RFC 4648 s. 4. The "URL-safe" encoding MUST NOT be used.
+
 Deprecated Item Types
 ---------------------
 
@@ -948,6 +1106,16 @@ Deprecated Item Types
 
   - "fingerprint": This was used to express a certificate fingerprint for a
     service provided at a domain. It is deprecated in favour of the "tls" item type.
+
+  - "spf": Attempts to transition to the use of a special SPF DNS resource
+    record type for the purposes of publishing SPF information have mostly
+    failed. SPF TXT records outnumber SPF data published in SPF records. Since
+    all implementations must support SPF in TXT records, there is little
+    advantage to the use of the SPF resource record type. In fact, further
+    standards developments such as DomainKeys use TXT records to store their
+    information.
+
+    As of writing, no domain name registered in the name database uses this item type.
 
 Possible Future Directions
 --------------------------
