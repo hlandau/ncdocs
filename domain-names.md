@@ -1103,9 +1103,9 @@ The following item types are deprecated by this document.
     As of writing, just 14 domains are attempting to make use of the (old)
     "tls" format. Of those domains, only six do so correctly, one of which has
     other configuration issues; two erroneously specify integers and not
-    strings for the port number, and six appear to use an alternate format:
+    strings for the port number, and six appear to use an even older format:
 
-      "tls": { "sha1": ["12:34:56:AB:CD:EF:..."], "enforce": "self" }
+        "tls": { "sha1": ["12:34:56:AB:CD:EF:..."], "enforce": "self" }
 
   - "email": This is nominally intended to specify an e. mail address for insertion
     into the hostmaster field of a SOA record. However, this assumes that each
