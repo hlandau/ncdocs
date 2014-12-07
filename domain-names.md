@@ -922,16 +922,81 @@ label if it complies with the following:
 
 Names of all kinds SHOULD always be specified in lowercase.
 
-Notes on DNS Subtleties
------------------------
-This document does not bother to reiterate the various subtleties of DNS which
-apply with regard to the items defined herein which are mappable to DNS
-resource records. For example, NS records normally preclude any other records
-at or below that name, but DS records at that name and IPv4 or IPv6 glue
-records below it are an exception. Since domains may rely on glue records
-correct processing of these cases is critical. In general a good understanding
-of DNS and its edge cases is necessary in implementing this specification, and
-there are doubtless other potential issues not listed here.
+Item Suppression Rules
+----------------------
+In some cases, the presence of an item means that certain other item types must
+not be present. If such items are present, they are invalid and must be ignored.
+These are termed suppressed items.
+
+Item suppression occurs in the following circumstances:
+
+  - One or more "ns" items are present. All items at or below that level which
+    map to DNS resource record types are suppressed, except for the following
+    items:
+
+    - The "ns" items themselves (but not any "ns" items below that level.)
+
+    - Any "ds" items at the level of the "ns" item.
+
+    - Any items below the "ns" items which constitute necessary
+      glue items. A necessary glue item is any "ip" or "ip6" item
+      which is at a level referenced by the "ns" items.
+
+      For example:
+
+          {
+            "ns": ["ns1", "ns2"],
+            "map": {
+              "ns1": {
+                "ip":  ["192.0.2.1"],
+                "ip6": ["::beef"]
+              },
+              "ns2": {
+                "ip":  ["192.0.2.2"],
+                "ip6": ["::cafe"]
+              },
+              "ns3": {
+                "ip":  ["192.0.2.3"],
+                "ip6": ["::1234"]
+              }
+            }
+          }
+
+      In this case the "ip" and "ip6" items at ns1 and ns2 are necessary
+      glue items and are preserved. However ns3 is not a necessary glue item
+      and so is not preserved.
+
+  - The "translate" item is present. All other items at or below that level
+    which map to DNS resource record types are suppressed.
+
+  - The "alias" item is present. All other items at that level which map to
+    DNS resource record types are suppressed.
+
+The suppression rules should be processed in the above order. That is, "ns"
+items should always take precedence over "translate" items, and "translate"
+items should always take precedence over "alias" items.
+
+The suppression rules never apply to items which are not DNS-mappable. For
+example, the "info" and "tor" item types are not DNS-mappable, so they are
+not suppressed.
+
+Note that some mode of item precedence is necessary in order to ensure that
+only valid DNS resource record sets are generated. This document does not
+bother to reiterate the various subtleties of DNS which apply with regard to
+the DNS-mappable items defined herein; however, conforming implementations
+which convert Domain Name Objects to DNS resource record sets must ensure that
+the resource record sets they generate are well-formed and comply with all
+applicable DNS rules and semantics. This is important as Domain Name Objects
+are untrusted data and should not be permitted to prejudice the integrity
+or validity of the zone as a whole.
+
+The suppression rules above are not necessarily the only necessary step in
+ensuring that generated resource record sets are valid; it is essential that
+implementers have a good understanding of DNS and its edge cases when
+implementing the specification, as there are doubtless other potential issues
+not listed here. Rather, the above suppression rules are specified to ensure
+that all implementations convert input Domain Name Objects which are not fully
+valid to DNS resource record sets in an equivalent, and thus compatible, way.
 
 Error Recovery Considerations
 -----------------------------
