@@ -802,6 +802,7 @@ example of an exception to this rule.)
       - CNAME (5)  -- Use "alias".
       - SOA   (6)
       - DNAME (39) -- Use "translate".
+      - DS    (43) -- Use "ds".
       - RRSIG (46)
       - NSEC  (47)
       - NSEC3 (50)
