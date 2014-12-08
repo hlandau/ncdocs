@@ -490,6 +490,8 @@ example of an exception to this rule.)
     processed equivalently. If both a "dns" and "ns" item are present, the
     "dns" item MUST take precedence.
 
+    The "dns" alias is deprecated and SHOULD NOT be used.
+
     The value for this item SHALL be one of the following forms:
 
     - An array of zero or more strings. Each such string SHALL contain a DNS name
