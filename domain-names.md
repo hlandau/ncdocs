@@ -168,6 +168,10 @@ example of an exception to this rule.)
           an array containing that string, and be processed as though that was
           what was encountered, as per the above form.
 
+          (Note that this form is valid only inside a "map" item; a string
+           does not itself satisfy the Domain Name Object Schema and MUST NOT
+           be used as a top-level construct encoded into a name value.)
+
       Examples:
 
           "map": {}
