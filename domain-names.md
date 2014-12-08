@@ -603,7 +603,7 @@ example of an exception to this rule.)
         The sixth value SHALL be a string expressing a DNS name expressing
         the Target of the SRV record.
 
-        Any additional items in the array beyond the first six MUST be
+        Any additional values in the array beyond the first six MUST be
         ignored.
 
     The "service" item MUST be processed by taking the SRV records expressed by
@@ -812,7 +812,7 @@ example of an exception to this rule.)
         The second value SHALL be a string containing base64-encoded data
         representing the type-specific resource record data in its binary form.
 
-        Any additional items in the array shall be ignored.
+        Any additional values in the array shall be ignored.
 
     Each opaque DNS resource record expressed MUST be processed only where the
     type of resource record it expresses is not one of the prohibited types.
