@@ -43,16 +43,16 @@ They can also be used to serve non-DNS data such as .onion addresses for Tor.
 
 Keys
 ----
-The key of the key-value pair shall be an ASCII-encoded name in the form
+The key of the key-value pair SHALL be an ASCII-encoded name in the form
 `d/NAME`, where NAME does not exceed 63 characters in length and matches the
 following case sensitive POSIX regex:
 
   `^(xn--)?[a-z0-9]+(-[a-z0-9]+)*$`
 
 Note that as per the above regex, the standard rules for domain names are
-enforced. Domain names cannot begin or end with a hyphen, and consecutive
-hyphens are not allowed except as permitted by the Internationalized Domain
-Names (IDN) specification.
+enforced. Domain names MUST NOT begin or end with a hyphen, and consecutive
+hyphens MUST NOT appear except as permitted by the Internationalized Domain
+Names (IDN) specification (RFC 3492).
 
 The `d/` prefix identifies the Domain Names namespace within the Namecoin key
 namespace. Names under this prefix are reserved for use in relation to this
@@ -60,14 +60,12 @@ specification and preceding versions of it. Keys not beginning with that prefix
 are wholly unrelated to this specification and are not required to conform to
 it.
 
-The part of the name following the `d/` prefix shall be the name which
-manifests in the .bit TLD. A key of `d/example` registers the name
-`example.bit.`
+The part of the name following the `d/` prefix is the name which manifests in
+the .bit TLD. A key of `d/example` registers the name `example.bit.`
 
-Since keys in the Namecoin key-value store are case sensitive, it is essential
-that the names be in lowercase. Names with any uppercase characters shall be
-wholly ignored by compliant implementations and shall not manifest in the .bit
-TLD.
+Since keys in the Namecoin key-value store are case sensitive, names MUST be in
+lowercase. Names with any uppercase characters SHALL be wholly ignored by
+compliant implementations and SHALL NOT manifest in the .bit TLD.
 
 Values
 ------
@@ -76,7 +74,7 @@ to the Domain Name Object Schema as described below. This specification
 therefore incorporates by reference RFC 7159, which specifies JSON.
 
 The JSON object SHOULD be encoded as compactly as possible, without unnecessary
-whitespace.
+whitespace. However, implementations MUST accept any valid JSON encoding.
 
 No particular limit is imposed on the length of the encoded JSON value.
 However, the Namecoin system itself imposes limitations, which must be respected
@@ -111,15 +109,20 @@ valid UTF-8 or UTF-32 code unit sequence.
 The JSON specification does not specify any format for comments. For
 illustration purposes, this document will use JavaScript-style line comments
 beginning with "//" at any point on a line and running until the end of the
-line. Implementations MUST NOT generate or parse such comments.
+line. Implementations MUST NOT generate or accept such comments.
 
 ### The Domain Name Object Schema
 
-A Domain Name Object Schema SHALL possess zero or more of the following items.
-Where each item is present, it MUST conform with the subschema for that item as
-specified. The key name to be used for a given item is shown first, in quotes.
+A Domain Name Object SHALL possess zero or more of the following items.  Where
+each item is present, it MUST conform with the subschema for that item as
+specified. The key to be used for a given item is shown first, in quotes.
+Each item MUST use the indicated key.
 
-Except where otherwise specified, any item with a value of `null` shall be
+In this document, "item" refers to a key-value pair within a JSON object.
+object. "Value" refers to any JSON value (object, array, string, integer, null,
+etc.)
+
+Except where otherwise specified, any item with a value of `null` SHALL be
 treated as being absent; that is, it will be processed as though it was not
 present in the object. Thus `null` is always a valid value for an item even
 though it is not explicitly mentioned herein. (See the "import" item for an
@@ -130,11 +133,11 @@ example of an exception to this rule.)
   - "map": Used to express a Domain Name Object for a subdomain of the current
     name.
 
-    The value for this item shall be of the following form:
+    The value for this item SHALL be of the following form:
 
     - An object mapping zero or more subdomain names to objects.
 
-      Each key shall be of one of the following forms:
+      Each key SHALL be of one of the following forms:
 
         - A string containing a valid and ordinary DNS label; the key MUST be a
           single unqualified label and so MUST NOT contain any dots (ASCII
@@ -154,13 +157,13 @@ example of an exception to this rule.)
           In other words, items which are present in the Immediate Ancestor
           take precedence over the items under the map item.
 
-      Each value shall be one of the following forms:
+      Each value SHALL be one of the following forms:
 
         - An object conforming to the Domain Name Object Schema.
 
           This is the canonical form.
 
-        - A string. Where this form is encountered, it shall be substituted
+        - A string. Where this form is encountered, it SHALL be substituted
           with an object containing a single item with key "ip" and a value of
           an array containing that string, and be processed as though that was
           what was encountered, as per the above form.
@@ -259,35 +262,35 @@ example of an exception to this rule.)
 
     Implementations MUST support an import recursion degree of at least four.
 
-    The value for this item shall be one of the following forms:
+    The value for this item SHALL be one of the following forms:
 
     - An array of zero or more arrays. Each such array expresses a single
       importation operation (though that operation may recursively give rise to
-      others, as described above) and shall have at least one item, the first
-      of which shall be a string expressing the name, in the Namecoin key-value
+      others, as described above) and SHALL have at least one value, the first
+      of which SHALL be a string expressing the name, in the Namecoin key-value
       store, the value of which should be imported as a Domain Name object.
 
-      The name shall be in Namecoin format and not DNS format, for example
+      The name SHALL be in Namecoin format and not DNS format, for example
       "d/example". The importation process fails if the name does not exist (or
       is expired), or if the Domain Name Object in the value corresponding to
       the name is not valid or is otherwise unprocessable.
 
-      If a second item is present in the array, it shall be a string and
+      If a second item is present in the array, it SHALL be a string and
       that string shall constitute the Subdomain Selector. Otherwise, the
-      Subdomain Selector shall be taken to be the empty string.
+      Subdomain Selector SHALL be taken to be the empty string.
 
       This form is the canonical form when the Subdomain Selector is
       explicitly specified.
 
-      If there are more than two items in the array, any further items are
+      If there are more than two values in the array, any further items MUST be
       ignored.
 
       The Subdomain Selector is used to identify a location in the imported
       Domain Name Object which is to be merged with the current object. If
       the Subdomain Selector is the empty string, the entire imported Domain
-      Name Object is merged. Otherwise, the Subdomain Selector shall be a
+      Name Object is merged. Otherwise, the Subdomain Selector SHALL be a
       sequence of DNS labels, separated by dots. (Note that the Subdomain
-      Selector must not end in a dot.) In this case, the labels in the Subdomain
+      Selector MUST NOT end in a dot.) In this case, the labels in the Subdomain
       Selector are processed in reverse order (i.e., in DNS order). Each label in
       the Subdomain Selector is used to move to the subdomain with that label,
       relative to the current position, until all labels in the Subdomain
@@ -304,24 +307,26 @@ example of an exception to this rule.)
       be done?]
 
       Any import statements at any location within a Domain Name Object being
-      imported must be processed prior to processing the Subdomain Selector.
+      imported MUST be processed prior to processing the Subdomain Selector.
 
-      Import statements must be attempted in the order they are specified in the
+      Import statements MUST be attempted in the order they are specified in the
       array. For types of item without custom merge rules, this determines the
       precedence of the items imported; the items specified directly in the
       importing object take ultimate precedence, then the first imported
       object's items, then the second imported object's items and so on.
 
       Where an import statement fails, any further import statements
-      should still be attempted.
+      SHOULD still be attempted.
 
     - An array of strings. When this form is encountered, each string in the array
-      shall be substituted with an array containing that string and be processed
+      SHALL be substituted with an array containing that string and be processed
       as though that was what was encountered, as per the above form.
 
   - "delegate": Similar to "import", though with different rules and less
     powerful. Since "import" constitutes a superset of the functionality of
-    "delegate", use of "import" is recommended instead.
+    "delegate", use of "import" is often preferable. However "delegate"
+    may have wider support; therefore it MAY be preferable to use "delegate"
+    where the the desired outcome is achievable using it.
 
     The key differences between "import" and "delegate" is that "delegate" can
     import only a single other name (though that name can still recursively
@@ -338,18 +343,18 @@ example of an exception to this rule.)
     The import recursion degree limits imposed are the same as those for the
     "import" statement.
 
-    The value for this item shall be one of the following forms:
+    The value for this item SHALL be one of the following forms:
 
-    - An array of one or more items. The first item shall be a string expressing
-      the Namecoin name to delegate to. The second item, if present, shall be
+    - An array of one or more values. The first value SHALL be a string expressing
+      the Namecoin name to delegate to. The second value, if present, SHALL be
       a string expressing the Subdomain Selector, which is processed as described
-      in the specification for "import". If the second item is not present, the
+      in the specification for "import". If the second value is not present, the
       Subdomain Selector is taken as "".
 
       This form is the canonical form when the Subdomain Selector is explicitly
-      specified (i.e. the second item is present).
+      specified (i.e. the second value is present).
 
-    - A string. When this form is encountered, it shall be substituted with an
+    - A string. When this form is encountered, it SHALL be substituted with an
       array containing that string and processed as though that was what was
       encountered, as per the above form.
 
@@ -366,11 +371,11 @@ example of an exception to this rule.)
     one or more DNS resource records of type "A", and is semantically
     equivalent to that set of resource records.
 
-    The value for this item shall be one of the following forms:
+    The value for this item SHALL be one of the following forms:
 
-    - An array of zero or more strings. Each such string shall contain an IPv4
-      address in dotted-decimal form. The address shall not use leading zeroes
-      and no whitespace shall be used. The numeric form for IPv4 addresses MUST
+    - An array of zero or more strings. Each such string SHALL contain an IPv4
+      address in dotted-decimal form. The address SHALL NOT use leading zeroes
+      and whitespace SHALL NOT be used. The numeric form for IPv4 addresses MUST
       NOT be used.
 
       Note that it is NOT the role of an implementation to validate any semantics
@@ -378,7 +383,7 @@ example of an exception to this rule.)
 
       This is the canonical form.
 
-    - A string. Where this form is encountered, it shall be substituted with an
+    - A string. Where this form is encountered, it SHALL be substituted with an
       array containing that string and be processed as though that was what was
       encountered, as per the above form.
 
@@ -401,18 +406,18 @@ example of an exception to this rule.)
     one or more DNS resource records of type "AAAA", and is semantically
     equivalent to that set of resource records.
 
-    The value for this item shall be one of the following forms:
+    The value for this item SHALL be one of the following forms:
 
-    - An array of zero or more strings. Each such string shall contain an IPv6
+    - An array of zero or more strings. Each such string SHALL contain an IPv6
       address in the text form as specified by RFC 4291. Each address SHOULD be
       encoded as compactly as possible. The alternative form which represents
       the last 32 bits of the address in the IPv4 dotted decimal format MAY be
-      used. No whitespace shall be used.
+      used. Whitespace SHALL NOT be used.
 
       This is the canonical form. If a canonical representation of IPv6 addresses
       is required, use the form specified in RFC 5952.
 
-    - A string. Where this form is encountered, it shall be substituted with an
+    - A string. Where this form is encountered, it SHALL be substituted with an
       array containing that string and be processed as though that was what was
       encountered, as per the above form.
 
@@ -434,10 +439,11 @@ example of an exception to this rule.)
     alias.  This item shall map to one DNS resource record of type "CNAME", and
     is semantically equivalent to that resource record.
 
-    The value for this item shall be of the following form:
+    The value for this item SHALL be of the following form:
 
     - A string containing a DNS name. This constitutes the canonical name nominated
-      as the target of the alias. The string SHOULD be a valid hostname.
+      as the target of the alias. The string MUST be a valid DNS name and SHOULD
+      be a valid hostname.
 
       This is the canonical form.
 
@@ -454,10 +460,11 @@ example of an exception to this rule.)
     it are delegated. This item shall map to one DNS resource record of type "DNAME",
     and is semantically equivalent to that resource record.
 
-    The value for this item shall be of the following form:
+    The value for this item SHALL be of the following form:
 
     - A string containing a DNS name. This constitutes the name nominated as the target
-      of the delegation. The string SHOULD be a valid hostname.
+      of the delegation. The string MUST be a valid DNS name and SHOULD be a
+      valid hostname.
 
       This is the canonical form.
 
@@ -475,20 +482,20 @@ example of an exception to this rule.)
     This item shall map to zero or more DNS resource records of type "NS", and is
     semantically equivalent to that set of resource records.
 
-    "dns" is an alias for this item. In other words, a "dns" item shall be
+    "dns" is an alias for this item. In other words, a "dns" item MUST be
     processed equivalently. If both a "dns" and "ns" item are present, the
-    "dns" item takes precedence.
+    "dns" item MUST take precedence.
 
-    The value for this item shall be one of the following forms:
+    The value for this item SHALL be one of the following forms:
 
-    - An array of zero or more strings. Each such string shall contain a DNS name
+    - An array of zero or more strings. Each such string SHALL contain a DNS name
       identifying a nameserver which is authoritative for the domain.
 
       The string MUST NOT be an IP address. It SHOULD be a hostname.
 
       This is the canonical form.
 
-    - A string. Where this form is encountered, it shall be substituted with an
+    - A string. Where this form is encountered, it SHALL be substituted with an
       array containing that string and be processed as though that was what was
       encountered, as per the above form.
 
@@ -508,29 +515,30 @@ example of an exception to this rule.)
     corresponding NS records. This item shall map to zero or more DNS resource records
     of type "DS", and is semantically equivalent to that set of resource records.
 
-    The value for this item shall be of the following form:
+    The value for this item SHALL be of the following form:
 
-    - An array of zero or more items. Each such item shall represent a DS record,
-      and each shall be an array of the following form:
+    - An array of zero or more items. Each such value shall represent a DS record,
+      and each SHALL be an array of the following form:
 
-      - The array shall contain at least four items. If it contains more than
-        four items, only the first four are considered and the rest are ignored.
+      - The array SHALL contain at least four values. If it contains more than
+        four values, only the first four are considered and the rest MUST be
+        ignored.
 
-      - The first item in the array shall be an unsigned integer expressible in
-        16 bits expressing the Key Tag field (RFC 4034 s. 5.1.1) of the corresponding
-        DS record.
+      - The first value in the array SHALL be an unsigned integer expressible
+        in 16 bits expressing the Key Tag field (RFC 4034 s. 5.1.1) of the
+        corresponding DS record.
 
-      - The second item in the array shall be an unsigned integer expressible in
-        8 bits expressing the Algorithm field (RFC 4034 s. 5.1.2) of the corresponding
-        DS record.
+      - The second value in the array SHALL be an unsigned integer expressible
+        in 8 bits expressing the Algorithm field (RFC 4034 s. 5.1.2) of the
+        corresponding DS record.
 
-      - The third item in the array shall be an unsigned integer expressible in
-        8 bits expressing the Digest Type field (RFC 4034 s. 5.1.3) of the corresponding
-        DS record.
+      - The third value in the array SHALL be an unsigned integer expressible
+        in 8 bits expressing the Digest Type field (RFC 4034 s. 5.1.3) of the
+        corresponding DS record.
 
-      - The fourth item in the array shall be a string containing the base64 encoding
-        of the logical content of the Digest field (RFC 4034 s. 5.1.4) of the corresponding
-        DS record.
+      - The fourth value in the array SHALL be a string containing the base64
+        encoding of the logical content of the Digest field (RFC 4034 s. 5.1.4)
+        of the corresponding DS record.
 
         The textual expression of this field in RFC 4034 uses hex encoding.
         Therefore this field must be converted to the correct form by decoding
@@ -548,11 +556,12 @@ example of an exception to this rule.)
         "ds": [[]]
         "ds": [12345,8,1,"11f6ad8ec52a2984abaafd7c3b516503785c2072"]
 
-    The following example form is literally valid, however the Digest field has been erroneously
-    expressed in hexadecimal format rather than base64 format. Since the field length is a multiple
-    of four characters this is valid base64. Note that the decoded digest field will be of the wrong
-    length for the given Digest Type. However, it is not the job of implementations to validate this
-    and implementations MUST NOT do so.
+    The following example form is literally valid, however the Digest field has
+    been erroneously expressed in hexadecimal format rather than base64 format.
+    Since the field length is a multiple of four characters this is valid
+    base64. Note that the decoded digest field will be of the wrong length for
+    the given Digest Type. However, it is not the role of implementations to
+    validate this and implementations MUST NOT do so.
 
         "ds": [[12345,8,1,"11f6ad8ec52a2984abaafd7c3b516503785c2072"]]
 
@@ -562,37 +571,37 @@ example of an exception to this rule.)
     records (once having applied the record name transformation described
     below).
 
-    The value for this item shall be of the following form:
+    The value for this item SHALL be of the following form:
 
-    - An array of zero or more items. Each such item shall represent a SRV record,
-      and shall be of the following form:
+    - An array of zero or more values. Each such item shall represent a SRV record,
+      and SHALL be of the following form:
 
-      - An array of at least six items.
+      - An array of at least six values.
 
-        The first item shall be a string expressing the application name (the
+        The first value SHALL be a string expressing the application name (the
         “Service” in RFC 2782 parlance, but without the leading underscore).
 
-        The second item shall be a string expressing the transport protocol
+        The second value SHALL be a string expressing the transport protocol
         name (the “Protocol” in RFC 2782 parlance, again without the leading
         underscore.)
 
-        The third item shall be a non-negative integer expressible in 16 bits
+        The third value SHALL be a non-negative integer expressible in 16 bits
         expressing the Priority of the SRV record.
 
-        The fourth item shall be a non-negative integer expressible in 16 bits
+        The fourth value SHALL be a non-negative integer expressible in 16 bits
         expressing the Weight of the SRV record.
 
-        The fifth item shall be a non-negative integer expressible in 16 bits
+        The fifth value SHALL be a non-negative integer expressible in 16 bits
         expressing the Port Number of the SRV record.
 
-        The sixth item shall be a string expressing a DNS name expressing
+        The sixth value SHALL be a string expressing a DNS name expressing
         the Target of the SRV record.
 
-        Any additional items in the array beyond the first six shall be
+        Any additional items in the array beyond the first six MUST be
         ignored.
 
-    The "service" item is processed by taking the SRV records expressed by it
-    and, for each of them, prepending to the DNS record's name the string
+    The "service" item MUST be processed by taking the SRV records expressed by
+    it and, for each of them, prepending to the DNS record's name the string
     `_AppProto._TransProto.` where `AppProto` and `TransProto` are the values
     as specified in the above form. Thus the correct name for each SRV record
     is formed automatically from the specified values, without having to use
@@ -603,39 +612,40 @@ example of an exception to this rule.)
     6698, and is semantically equivalent to that set of resource records (once
     having applied the record name transformation described below).
 
-    The value for this item shall be of the following form:
+    The value for this item SHALL be of the following form:
 
     - An array of zero or more items. Each such item shall represent a TLSA record,
-      and shall be of the following form:
+      and SHALL be of the following form:
 
-      - An array of at least six items.
+      - An array of at least six values.
 
-        The first item shall be a string (or an integer, in which case it is
+        The first value SHALL be a string (or an integer, in which case it is
         converted to the string which is the decimal representation of it without
         leading zeroes) expressing the port number.
 
-        The second item shall be a string expressing the transport protocol name.
+        The second value SHALL be a string expressing the transport protocol name.
 
-        The third item shall be a non-negative integer expressible in 8 bits
+        The third value SHALL be a non-negative integer expressible in 8 bits
         expressing the Certificate Usage Field of the TLSA record (RFC 6698 s. 2.1.1).
 
-        The fourth item shall be a non-negative integer expressible in 8 bits
+        The fourth value SHALL be a non-negative integer expressible in 8 bits
         expressing the Selector Field of the TLSA record (RFC 6698 s. 2.1.2).
 
-        The fifth item shall be a non-negative integer expressible in 8 bits
+        The fifth value SHALL be a non-negative integer expressible in 8 bits
         expressing the Matching Type Field of the TLSA record (RFC 6698 s. 2.1.3).
 
-        The sixth item shall be a string containing the base64 encoding of the
-        logical encoding of the Certificate Association Data Field of the TLSA record (RFC 6698 s. 2.1.4).
+        The sixth value SHALL be a string containing the base64 encoding of the
+        logical encoding of the Certificate Association Data Field of the TLSA
+        record (RFC 6698 s. 2.1.4).
 
-        The textual expression of this field in RFC 6698 uses hex encoding. Therefore this
-        field must be converted to the correct form by decoding it and reencoding it
-        using base64.
+        The textual expression of this field in RFC 6698 uses hex encoding.
+        Therefore this field must be converted to the correct form by decoding
+        it and reencoding it using base64.
 
-        Any additional items in the array beyond the first six shall be ignored.
+        Any additional values in the array beyond the first six MUST be ignored.
 
-    The "tls" item is processed by taking the TLSA records expressed by it and,
-    for each of them, prepending to the DNS record's name the string
+    The "tls" item MUST be processed by taking the TLSA records expressed by it
+    and, for each of them, prepending to the DNS record's name the string
     `_PortNumber._TransProto.` where `PortNumber` and `TransProto` are the
     values as specified in the above form. Thus the correct name for each TLSA
     record is formed automatically from the specified values, without having to
@@ -654,19 +664,19 @@ example of an exception to this rule.)
     strings. For example, DomainKeys, which uses TXT records to store signing key
     identities in DNS, does this, as the key data may exceed 255 bytes in length.
 
-    The value for this item shall be of one of the following forms:
+    The value for this item SHALL be of one of the following forms:
 
     - An array of zero or more items. Each such item shall represent a TXT record,
-      and shall take one of the following forms:
+      and SHALL take one of the following forms:
 
-      - An array of one or more strings. Each such string shall not exceed 255
+      - An array of one or more strings. Each such string SHALL NOT exceed 255
         bytes in its UTF-8 representation.
 
-      - A string. Where this form is encountered, it shall be substituted with
-        an array of one or more strings, such that all but the last string
-        in the array is 255 bytes in the length of its UTF-8 representation,
-        and be processed as though that was what was encountered, as per the above
-        form.
+      - A string. Where this form is encountered, it SHALL be substituted with
+        an array of one or more strings, such that all but possibly the last
+        string in the array is 255 bytes in the length of its UTF-8
+        representation, and be processed as though that was what was
+        encountered, as per the above form.
 
         In other words, the string is chopped up so that it can be expressed as
         a sequence of strings each up to 255 bytes in length, such that the
@@ -680,7 +690,7 @@ example of an exception to this rule.)
         form is the canonical form. Otherwise, the above form (the
         array-of-arrays form) is the canonical form.
 
-    - A string. Where this form is encountered, it shall be substituted with an
+    - A string. Where this form is encountered, it SHALL be substituted with an
       array containing that string and be processed as though that was what was
       encountered, as per the above form.
 
@@ -699,25 +709,25 @@ example of an exception to this rule.)
   - MX: MX records cannot be specified directly. Instead, where a domain name
     provides a service using the "service" item type for a service with an
     application name of "smtp" and a transport protocol name of "tcp" (`_smtp._tcp`),
-    implementations generating DNS records shall generate an MX record for each
+    implementations generating DNS records MUST generate an MX record for each
     endpoint specified for that service which specifies a port number of 25. Any
     `_smtp._tcp` SRV record with a port number other than 25 is ignored. The MX
     record shall be constructed using the priority and target fields of the
     SRV record. The weight and port fields shall be discarded.
 
-    Implementations must still make the SRV records available in addition to the
+    Implementations MUST still make the SRV records available in addition to the
     MX records.
 
   - "loc": Used to identify zero or more physical location records. This item
     shall map to zero or more DNS resource records of type "LOC", and is
     semantically equivalent to that set of resource records.
 
-    The value for this item shall be of one of the following forms:
+    The value for this item SHALL be of one of the following forms:
     
-    - An array of zero or more items. Each such item shall be a string conforming
+    - An array of zero or more value. Each such value SHALL be a string conforming
       to the textual format specified in RFC 1876 s. 3 for the type-specific data.
 
-    - A string. Where this form is encountered, it shall be substituted with an
+    - A string. Where this form is encountered, it SHALL be substituted with an
       array containing that string and be processed as though that was what as
       encountered, as per the above form.
 
@@ -734,9 +744,9 @@ example of an exception to this rule.)
 
   - "tor": Provides a Tor onion address.
   
-    The value for this item shall take the form of a string containing a Tor
+    The value for this item SHALL take the form of a string containing a Tor
     onion address, including the ".onion" suffix. (Note that the value MUST NOT
-    be an URL.) The string must not have a trailing dot. This value denotes
+    be an URL.) The string MUST NOT have a trailing dot. This value denotes
     that the current object is mappable to a Tor hidden service with the given
     address.
 
@@ -746,30 +756,35 @@ example of an exception to this rule.)
     
   - "freenet": Provides a Freenet freesite key.
 
-    The value for this item shall take the form of a string containing a Freenet
+    The value for this item SHALL take the form of a string containing a Freenet
     freesite key, e.g. "USK@0I8g...xbZ4,AQACAAE/Example/42/".
 
 #### Administrative Constructs
 
   - "info": This optional item can be used to provide WHOIS-like information.
 
-    The value for this item shall be of one of the following forms:
+    The value for this item SHALL be of one of the following forms:
 
     - An object containing zero or more of the following items:
 
       - "r": A registrant. This represents the “legal” owner of the domain.
-        The value shall comply with the WHOIS Entity Schema as described in this document.
+        The value SHALL comply with the WHOIS Entity Schema as described in
+        this document.
+
+      - "rr": A sponsoring registrar. This represents an intermediary which
+        manages the domain registration. The value SHALL comply with the WHOIS
+        Entity Schema as described in this document.
 
       - "a": An administrative contact. This represents the administrative
-        operator of the domain. The value shall comply with the WHOIS Entity
+        operator of the domain. The value SHALL comply with the WHOIS Entity
         Schema as described in this document.
 
       - "t": A technical contact. This is the appropriate point of contact for
-        nameserver or other DNS-related issues. The value shall comply with the
+        nameserver or other DNS-related issues. The value SHALL comply with the
         WHOIS Entity Schema as described in this document.
 
     - A value directly complying with the WHOIS Entity Schema. This can be used
-      where one entity takes on all three roles.
+      where a single entity takes on the "r", "a" and "t" roles.
 
 #### Experimental DNS-Compatible Item Types
 
@@ -777,18 +792,18 @@ example of an exception to this rule.)
     to zero or more DNS resource records, and is semantically equivalent to
     that set of resource records.
 
-    The value for this item shall be of the following form:
+    The value for this item SHALL be of the following form:
 
-    - An array of zero or more items. Each such item shall represent a DNS
-      resource record, and shall be of the following form:
+    - An array of zero or more values. Each such value SHALL represent a DNS
+      resource record, and SHALL be of the following form:
 
-      - An array of at least two items.
+      - An array of at least two values.
 
-        The first item shall be a non-negative integer expressible in 16 bits
+        The first value SHALL be a non-negative integer expressible in 16 bits
         expressing the resource record type number of the DNS resource record.
         For example, specifying 16 would mean a TXT record.
 
-        The second item shall be a string containing base64-encoded data
+        The second value SHALL be a string containing base64-encoded data
         representing the type-specific resource record data in its binary form.
 
         Any additional items in the array shall be ignored.
@@ -807,6 +822,11 @@ example of an exception to this rule.)
       - NSEC  (47)
       - NSEC3 (50)
 
+    Opaque items SHOULD NOT be used where the DNS resource record types they
+    represent can be represented by a non-opaque items described in this
+    document, even when the resource record type in question is not a
+    prohibited type.
+
     Discussion: This item type is experimental. It is possible that allowing
     arbitrary DNS resource record types to be placed in the `.bit` zone may
     constitute a security risk. Since no currently operated public TLD
@@ -821,28 +841,35 @@ example of an exception to this rule.)
 Interpretation of DNS Names
 ---------------------------
 Some values in some item types, such as the value of the "alias" item type,
-express DNS names. These names may be fully qualified, in which case this is
-indicated by terminating them with a dot. Where this is not done, such names
-are relative and must be interpreted according to the following rules.
+express DNS names, domain names or hostnames (which are both subsets of the set
+of valid DNS names).
 
-As an exception to the normal rules of what constitutes a valid DNS label, the
-last label of a relative DNS name may be "@". If this is the case, the rest of
-the label is interpreted relative to the name apex. The name apex is the DNS
-name of the form `NAME.bit.`, where NAME is the Namecoin domain name under
-which the current object ultimately lies. Thus for name `d/example`, the
-relative name `foo.@` is equivalent to the value `foo.example.bit.`
+Except where otherwise specified, these names MAY be either relative or fully qualified.
+A fully qualified name MUST be terminated with a dot ("."); where this is not done,
+a name is relative and MUST be interpreted according to the following rules.
 
-Where a relative name does not end with the label "@", it is a relative name
-interpreted relative to the current object. If the current object is the
-top-level object (that is, the object encoded directly into the value of the
-Namecoin key-value pair representing the domain name), then the relative name
-is interpreted relative to the name apex, and so `foo.@` and `foo` have
-identical meanings.
+As an exception to the normal rules of what constitutes a valid label, the last
+label of a relative name may be "@". If this is the case, the rest of the name
+MUST be interpreted relative to the name apex. The name apex is the domain name
+of the form `NAME.bit.`, where NAME is the Namecoin domain name under which the
+current object ultimately lies. Thus for name `d/example`, the relative name
+`foo.@` is equivalent to the value `foo.example.bit.`
 
-If the current object is not the top-level object (for example, it is the value
-of an item in a "map" item), the relative name is interpreted relative to the parent object (that is, the object containing the "map" item).
+Where a relative name does not end with the label "@", it MUST be interpreted
+as a relative name relative to the current object according to the following rules:
 
-For example, in the following example Domain Name Object, `foo.bar` is resolved to `foo.bar.@`.
+  - If the current object is the top-level object (that is, the object encoded
+    directly into the value of the Namecoin key-value pair representing the
+    domain name), then the relative name is interpreted relative to the name
+    apex, and so `foo.@` and `foo` have identical meanings.
+
+  - If the current object is not the top-level object (for example, it is the
+    value of an item in a "map" item), the relative name MUST be interpreted
+    relative to the parent object (that is, the object containing the "map"
+    item).
+
+For example, in the following example Domain Name Object, `foo.bar` is resolved
+to `foo.bar.@`.
 
     {
       "map": {
@@ -866,17 +893,18 @@ In the following Domain Name Object, `foo.bar` is resolved to `foo.bar.baz.@`.
       }
     }
 
-In all cases, the name must constitute a valid DNS name after it is resolved
-and thus becomes fully qualified. In particular, this means that the resulting name must
-not exceed 255 characters.
+In all cases, the name MUST constitute a valid DNS name after it is resolved
+and thus becomes fully qualified. In particular, this means that the resulting
+name MUST NOT exceed 255 characters.
 
 The WHOIS Entity Schema
 -----------------------
-A value complies with the WHOIS Entity Schema if it takes one of the following forms:
+A value complies with the WHOIS Entity Schema if and only if it takes one of
+the following forms:
 
-  - An object complying with the rules for an object as would be encoded into the
-    value of a name in the `id` namespace. The object must comply with the rules
-    for values in that namespace.
+  - An object complying with the rules for an object as would be encoded into
+    the value of a name in the `id` namespace. The object MUST comply with the
+    rules for objects as encoded into name values in that namespace.
 
   - A string beginning with "id/" and thereby identifying the Namecoin name of
     an identity in the `id` namespace. The identifier ends at the first
@@ -884,29 +912,30 @@ A value complies with the WHOIS Entity Schema if it takes one of the following f
     string which may be used to provide additional information.
 
     The string up to and excluding the first whitespace character (or the
-    entire string, if there is no whitespace) must be a valid name in the `id`
+    entire string, if there is no whitespace) MUST be a valid name in the `id`
     namespace as per the rules of that namespace. The rules of that namespace
-    shall be used in representing the entity.
+    SHALL be used in representing the entity.
 
-  - A freeform string describing the entity arbitrarily. The string must not
+  - A freeform string describing the entity arbitrarily. The string MUST NOT
     begin with "id/".
 
 Definitions of Valid Names
 --------------------------
-This specification refers to "DNS names" and "hostnames". The set of valid
-hostnames is a subset of the set of valid DNS names.
+This specification refers to "DNS names", "domain names" and "hostnames". The
+set of domain names and the set of hostnames are both subsets of the set of
+valid DNS names.
 
-A name is a valid DNS name if:
+A string is a valid DNS name if:
 
   - it consists of a sequence of zero or more valid DNS labels separated by
     ASCII '.' and optionally terminated by a single '.' which denotes that it
     is fully qualified, and;
 
-  - it does not exceed 255 octets in length.
+  - it does not exceed 255 octets in length, not counting any trailing '.'.
 
 What constitutes a valid DNS label is beyond the scope of this specification.
 (After all, the rules have changed over time; see the now deprecated RFC 2874).
-However, the set of valid DNS labels MUST be a superset of the DNS labels which
+However, the set of valid DNS labels MUST contain the set of DNS labels which
 comply with the following:
 
   - it matches the POSIX regexp `^[a-z0-9_-]+$`, and;
@@ -914,7 +943,7 @@ comply with the following:
   - it does not exceed 63 octets in length.
 
 A hostname is a particular kind of DNS name following stricter rules. Namely,
-every label in a hostname must be a valid host label. A label is a valid host
+every label in a hostname MUST be a valid host label. A label is a valid host
 label if it complies with the following:
 
   - it matches the POSIX regexp `^(xn--)?([a-z0-9]+-)*[a-z0-9]+$`, and;
@@ -925,15 +954,15 @@ Names of all kinds SHOULD always be specified in lowercase.
 
 Item Suppression Rules
 ----------------------
-In some cases, the presence of an item means that certain other item types must
-not be present. If such items are present, they are invalid and must be ignored.
-These are termed suppressed items.
+In some cases, the presence of an item means that certain other item types MUST
+NOT be present. If such items are present, they are invalid and MUST be
+ignored.  These are termed suppressed items.
 
 Item suppression occurs in the following circumstances:
 
   - One or more "ns" items are present. All items at or below that level which
-    map to DNS resource record types are suppressed, except for the following
-    items:
+    map to DNS resource record types MUST be suppressed, except for the following
+    items, which MUST NOT be suppressed:
 
     - The "ns" items themselves (but not any "ns" items below that level.)
 
@@ -968,27 +997,27 @@ Item suppression occurs in the following circumstances:
       and so is not preserved.
 
   - The "translate" item is present. All other items at or below that level
-    which map to DNS resource record types are suppressed.
+    which map to DNS resource record types MUST be suppressed.
 
   - The "alias" item is present. All other items at that level which map to
-    DNS resource record types are suppressed.
+    DNS resource record types MUST be suppressed.
 
-The suppression rules should be processed in the above order. That is, "ns"
-items should always take precedence over "translate" items, and "translate"
-items should always take precedence over "alias" items.
+The suppression rules MUST be processed in the above order. That is, "ns"
+items MUST always take precedence over "translate" items, and "translate"
+items MUST always take precedence over "alias" items.
 
-The suppression rules never apply to items which are not DNS-mappable. For
-example, the "info" and "tor" item types are not DNS-mappable, so they are
-not suppressed.
+The suppression rules MUST NOT be applied to items which are not DNS-mappable.
+For example, the "info" and "tor" item types are not DNS-mappable, so they are
+never suppressed.
 
 Note that some mode of item precedence is necessary in order to ensure that
 only valid DNS resource record sets are generated. This document does not
 bother to reiterate the various subtleties of DNS which apply with regard to
 the DNS-mappable items defined herein; however, conforming implementations
-which convert Domain Name Objects to DNS resource record sets must ensure that
+which convert Domain Name Objects to DNS resource record sets MUST ensure that
 the resource record sets they generate are well-formed and comply with all
 applicable DNS rules and semantics. This is important as Domain Name Objects
-are untrusted data and should not be permitted to prejudice the integrity
+are untrusted data and MUST NOT be permitted to prejudice the integrity
 or validity of the zone as a whole.
 
 The suppression rules above are not necessarily the only necessary step in
@@ -1003,8 +1032,9 @@ Error Recovery Considerations
 -----------------------------
 Any domain name system has the capacity to operate as critical infrastructure.
 It is important that implementations not penalise names excessively for partial
-invalidity in their values. Where an error is encountered, it should be silently
-ignored and an attempt to process the remainder of the object should be made.
+invalidity in their values. Where an error is encountered, it should be
+silently ignored or logged and an attempt to process the remainder of the
+object should be made.
 
 For example, in the following example an invalid IP address is specified:
 
@@ -1016,26 +1046,27 @@ The "ip" item is not validly constructed, and so the Domain Name Object itself
 is not validly constructed. However, a resilient implementation will consider
 the domain to at least have the IP address (A record) of 192.0.2.1. This demonstrates
 a general principle in processing Domain Name Objects: semantic or form errors
-in an item should not penalize the processing of other items, and items which
-express multiple conceptual values should have as many of those values processed
+in an item SHOULD NOT penalize the processing of other items, and items which
+express multiple conceptual values SHOULD have as many of those values processed
 as possible.
 
-Because errors should not cause processing to stop, the outcome of processing
-should not vary based on whether the erroneous values are leading or trailing
+Because errors SHOULD NOT cause processing to stop, the outcome of processing
+SHOULD NOT vary based on whether the erroneous values are leading or trailing
 with regard to the valid data.
 
 Definition of Base64
 --------------------
 All references to base64 encoding in this document refer to the base64 encoding
-scheme described in RFC 4648. Base64 encoding and decoding MUST be performed
-as specified therein. Encoded base64 strings MUST be in canonical form as specified
-in RFC 4648 s. 3.5. The standard alphabet shall be used, as described in RFC 4648 s. 4. The "URL-safe" encoding MUST NOT be used.
+scheme described in RFC 4648. Base64 encoding and decoding MUST be performed as
+specified therein. Encoded base64 strings MUST be in canonical form as
+specified in RFC 4648 s. 3.5. The standard alphabet shall be used, as described
+in RFC 4648 s. 4. The "URL-safe" encoding MUST NOT be used.
 
 Previously Deprecated Item Types
 --------------------------------
 
 The following item types were already deprecated before this document. They
-remain deprecated.
+remain deprecated and SHOULD NOT be used.
 
   - "fingerprint": This was used to express a certificate fingerprint for a
     service provided at a domain. It is deprecated in favour of the "tls" item type.
@@ -1043,7 +1074,7 @@ remain deprecated.
 Newly Deprecated Item Types
 ---------------------------
 
-The following item types are deprecated by this document.
+The following item types are deprecated by this document and SHOULD NOT be used.
 
   - "tls": A previous format for the "tls" item type was proposed which strips out
     some of the fields incorporated in the TLSA DNS record type. Since this precludes
