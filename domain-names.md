@@ -944,15 +944,23 @@ What constitutes a valid DNS label is beyond the scope of this specification.
 However, the set of valid DNS labels MUST contain the set of DNS labels which
 comply with the following:
 
-  - it matches the POSIX regexp `^[a-z0-9_-]+$`, and;
+  - it matches the POSIX regexp `^([a-z0-9_]|[a-z0-9_][a-z0-9_-]*[a-z0-9_])$`, and;
 
   - it does not exceed 63 octets in length.
 
-A hostname is a particular kind of DNS name following stricter rules. Namely,
-every label in a hostname MUST be a valid host label. A label is a valid host
-label if it complies with the following:
+A domain name is a particular kind of DNS name following stricter rules. Namely,
+every label in a domain name MUST be a valid domain label. A string is a valid
+domain label if it complies with the following:
 
   - it matches the POSIX regexp `^(xn--)?([a-z0-9]+-)*[a-z0-9]+$`, and;
+
+  - it is a valid DNS label.
+
+A hostname is a particular kind of DNS name following stricter rules. Namely,
+every label in a hostname MUST be a valid host label. A string is a valid
+host label if it complies with the following:
+
+  - it does not contain any underscores, and;
 
   - it is a valid DNS label.
 
