@@ -329,7 +329,7 @@ example of an exception to this rule.)
   - "delegate": Similar to "import", though with different rules and less
     powerful. Since "import" constitutes a superset of the functionality of
     "delegate", use of "import" is often preferable. However "delegate"
-    may have wider support; therefore it MAY be preferable to use "delegate"
+    may have wider support; therefore it may be preferable to use "delegate"
     where the the desired outcome is achievable using it.
 
     The key differences between "import" and "delegate" is that "delegate" can
