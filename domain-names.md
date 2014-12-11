@@ -585,11 +585,12 @@ example of an exception to this rule.)
       - An array of at least six values.
 
         The first value SHALL be a string expressing the application name (the
-        “Service” in RFC 2782 parlance, but without the leading underscore).
+        “Service” in RFC 2782 parlance, but without the leading underscore),
+        or the string "*", or the empty string, or `null`.
 
         The second value SHALL be a string expressing the transport protocol
         name (the “Protocol” in RFC 2782 parlance, again without the leading
-        underscore.)
+        underscore), or the string "*", or the empty string, or `null`.
 
         The third value SHALL be a non-negative integer expressible in 16 bits
         expressing the Priority of the SRV record.
@@ -608,10 +609,8 @@ example of an exception to this rule.)
 
     The "service" item MUST be processed by taking the SRV records expressed by
     it and, for each of them, prepending to the DNS record's name the string
-    `_AppProto._TransProto.` where `AppProto` and `TransProto` are the values
-    as specified in the above form. Thus the correct name for each SRV record
-    is formed automatically from the specified values, without having to use
-    "map" items.
+    which is the output of SPDF(first value in array, second value in array).
+    See the SPDF section for a definition of this function.
 
   - "tls": Used to identify zero or more TLS anchor records. This item shall
     map to zero or more DNS resource records of type "TLSA", as defined in RFC
@@ -627,9 +626,11 @@ example of an exception to this rule.)
 
         The first value SHALL be a string (or an integer, in which case it is
         converted to the string which is the decimal representation of it without
-        leading zeroes) expressing the port number.
+        leading zeroes) expressing the port number, or the string "*", or the
+        empty string, or `null`.
 
-        The second value SHALL be a string expressing the transport protocol name.
+        The second value SHALL be a string expressing the transport protocol name,
+        or the string "*", or the empty string, or `null`.
 
         The third value SHALL be a non-negative integer expressible in 8 bits
         expressing the Certificate Usage Field of the TLSA record (RFC 6698 s. 2.1.1).
@@ -652,10 +653,8 @@ example of an exception to this rule.)
 
     The "tls" item MUST be processed by taking the TLSA records expressed by it
     and, for each of them, prepending to the DNS record's name the string
-    `_PortNumber._TransProto.` where `PortNumber` and `TransProto` are the
-    values as specified in the above form. Thus the correct name for each TLSA
-    record is formed automatically from the specified values, without having to
-    use "map" items.
+    which is the output of SPDF(first value in array, second value in array).
+    See the SPDF section for a definition of this function.
 
   - "txt": Used to identify zero or more text data records. This item shall map
     to zero or more DNS resource records of type "TXT", and is semantically
@@ -843,6 +842,37 @@ example of an exception to this rule.)
     record types with particularly infrastructural significance. All of the
     prohibited types listed above are processed specially by DNS resolvers
     and/or authoritative servers.
+
+The Service Prefix Derivation Function
+--------------------------------------
+
+The function SPDF(...) is then defined as follows:
+
+    All inputs must be `null`, strings or integers.
+    Let s be the empty string.
+
+    For each value passed:
+      If the value is an empty string, change it to `null`.
+      If the value is an integer, change it to a string containing a decimal
+      ASCII encoding of that integer (without leading zeroes or whitespace).
+
+      If the value passed is null, continue to the next value.
+      If the value passed is "*", append "*." to s.
+      Otherwise, append "_" followed by the value to s, followed by "_".
+
+    Return s.
+
+Example evaluations:
+
+    SPDF(  null,   null) = ""
+    SPDF("http",  "tcp") = "_http._tcp."
+    SPDF( "443",  "tcp") = "_443._tcp."
+    SPDF(   443,  "tcp") = "_443._tcp."
+    SPDF(  null,  "tcp") = "_tcp."
+    SPDF("http",   null) = "_http."
+    SPDF(   "*",  "tcp") = "*._tcp."
+    SPDF(    "",     "") = ""
+    SPDF(  null,    "*") = "*."
 
 Interpretation of DNS Names
 ---------------------------
