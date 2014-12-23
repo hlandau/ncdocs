@@ -1,18 +1,30 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+**Table of Contents**
 
 - [State of Namecoin](#state-of-namecoin)
   - [1. Node Types; Strategies for Deployment](#1-node-types-strategies-for-deployment)
-    - [SPV, UTXO and coinbase-authenticated UTXO trees](#spv-utxo-and-coinbase-authenticated-utxo-trees)
-    - [Discussion of Adversaries](#discussion-of-adversaries)
+    - [Charter of Vulnerabilities](#charter-of-vulnerabilities)
+    - [Full Node](#full-node)
+    - [SPV](#spv)
+    - [SPV+UTXO CB](#spvutxo-cb)
+    - [SPV+UTXO CB+NX CB](#spvutxo-cbnx-cb)
+    - [SPV+UTXO](#spvutxo)
+    - [TS](#ts)
   - [2. Full Node Infrastructure](#2-full-node-infrastructure)
     - [Block Validation Rules](#block-validation-rules)
-    - [Wire Protocol](#wire-protocol)
     - [Seeding Methods](#seeding-methods)
-    - [Conclusion](#conclusion)
-  - [DD  2. SPV and UTXO Infrastructure](#dd--2-spv-and-utxo-infrastructure)
-  - [3. Strategies for Deployment](#3-strategies-for-deployment)
+    - [Wire Protocol](#wire-protocol)
+  - [3. Primary Access Modes](#3-primary-access-modes)
+    - [Local Recursive-Passthrough DNS Server, Node](#local-recursive-passthrough-dns-server-node)
+    - [Local Authoritative DNS Server, Unbound, Node](#local-authoritative-dns-server-unbound-node)
+    - [Local Proxy-based solutions, browser extensions...](#local-proxy-based-solutions-browser-extensions)
+  - [4. Auxillary Access Modes](#4-auxillary-access-modes)
+    - [Central Authoritative DNS Service](#central-authoritative-dns-service)
+    - [Central Recursive DNS Service](#central-recursive-dns-service)
+    - [Central DNS Suffix](#central-dns-suffix)
+    - [Central Proxy](#central-proxy)
+  - [5. Strategies for Deployment](#5-strategies-for-deployment)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
