@@ -1177,4 +1177,22 @@ Possible Future Directions
     counterproductive. Thus if compression were supported, the choice would be between
     zlib and lighter formats such as Snappy or LZ4.
 
+Bugs
+----
+
+  - Generally, importation occlusion is determined by (owner name, type).
+    The use of `null` items is used to occlude when it is desired to suppress a given item type
+    in imported data without specifying any substitute records, i.e. to occlude imported
+    data with a set of zero records of the given owner name and type.
+
+    The "service" and "tls" item types described in this specification are ambiguous
+    in their expression of the empty set, because they express records for more than one
+    owner name.
+
+    For example, suppose name dd/example expresses a service `_http._tcp`.
+    An importing name d/example can override this by expressing its own service
+    `_http._tcp`, but cannot occlude the `_http._tcp` service to the empty set.
+    (The SRV specification allows the use of the endpoint name `.` to denote a
+     service which is unavailable, but this inhibits hostname fallback, so this
+     is not semantically equivalent to having no SRV records.)
 
