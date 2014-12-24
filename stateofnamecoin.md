@@ -44,22 +44,26 @@ section 2.
 Wider deployment requires viable means of developing lightweight clients. The
 following table lists all proposed node types:
 
-Node Type              | Weight   | Security | Storage | Vulnerabilities          | Data Stored      | Storage Rate of Change | Name Data Stored  | Deployability       |
----------------------- | -------- | -------- | ------- | ------------------------ | ---------------- | ---------------------- | ----------------- | ------------------- |
-Full Node              | Heaviest | Highest  | Highest | 51%,Sy(a)                | Blocks           | Increases perpetually  | All               | Low                 |
-SPV+UTXO CB+NX CB+TS   | Light    | V. High  | Low     | 51%+T(a), T(p)           | Headers          | Linearly w.r.t. time   | None              | High, softfork, WPC |
-SPV36+UTXO CB+NX CB+TS | V. Light | V. High  | V. Low  | 51%+T(a), T(p)           | 36k Headers      | Zero                   | None              | High, softfork, WPC |
-SPV+UTXO CB+NX CB      | Light    | V. High  | Low     | 51%,Sy(a), W,Sy(p)       | Headers          | Linearly w.r.t. time   | None              | High, softfork, WPC |
-SPV36+UTXO CB+NX CB    | V. Light | V. High  | V. Low  | 51%,Sy(a), W,Sy(p)       | 36k Headers      | Zero                   | None              | High, softfork, WPC |
-SPV+UTXO CB+TS         | Light    | V. High  | Low     | 51%+T(a), T(b,p)         | Headers          | Linearly w.r.t. time   | None              | High, softfork, WPC |
-SPV36+UTXO CB+TS       | V. Light | V. High  | V. Low  | 51%+T(a), T(b,p)         | 36k Headers      | Zero                   | None              | High, softfork, WPC |
-SPV+UTXO CB            | Light    | V. High  | Low     | 51%,Sy(a), b, W,Sy(p)    | Headers          | Linearly w.r.t. time   | None              | High, softfork, WPC |
-SPV36+UTXO CB          | V. Light | V. High  | V. Low  | 51%,Sy(a), b, W,Sy(p)    | 36k Headers      | Zero                   | None              | High, softfork, WPC |
-SPV+UTXO               | Medium   | Medium   | Medium  | ?                        | Headers+UTXO     |                        | All               | Medium              |
-SPV36+UTXO             | Medium   | Medium   | Medium  | ?                        | 36k Headers+UTXO |                        | All               | Medium              |
-SPV                    | Light    | Low      | V. Low  | 51%,Sy(a), b, c, W,Sy(p) | Headers          | Linearly w.r.t. time   | None              | High, WPC           |
-SPV36                  | V. Light | Low      | V. Low  | 51%,Sy(a), b, c, W,Sy(p) | 36k Headers      | Zero                   | None              | High, WPC           |
-TS                     | Lightest | Lowest   | Lowest  | T(a, b, c, d, p)         | None             | Zero                   | None              | Highest             |
+Node Type              | Weight | Security | Storage | Vulnerabilities          | Data Stored      | Storage Rate of Change | Name Data Stored  | Deployability       |
+---------------------- | ------ | -------- | ------- | ------------------------ | ---------------- | ---------------------- | ----------------- | ------------------- |
+Full Node              | 5      | 5        | 5       | 51%,Sy(a)                | Blocks           | Increases perpetually  | All               | Low                 |
+SPV+UTXO CB+NX CB+TS   | 3      | 4        | 3       | 51%+T(a), T(p)           | Headers          | Linearly w.r.t. time   | None              | High, softfork, WPC |
+SPV36+UTXO CB+NX CB+TS | 2      | 4        | 2       | 51%+T(a), T(p)           | 36k Headers      | Zero                   | None              | High, softfork, WPC |
+SPV+UTXO CB+NX CB      | 3      | 4        | 3       | 51%,Sy(a), W,Sy(p)       | Headers          | Linearly w.r.t. time   | None              | High, softfork, WPC |
+SPV36+UTXO CB+NX CB    | 2      | 4        | 2       | 51%,Sy(a), W,Sy(p)       | 36k Headers      | Zero                   | None              | High, softfork, WPC |
+SPV+UTXO CB+TS         | 3      | 4        | 3       | 51%+T(a), T(b,p)         | Headers          | Linearly w.r.t. time   | None              | High, softfork, WPC |
+SPV36+UTXO CB+TS       | 2      | 4        | 2       | 51%+T(a), T(b,p)         | 36k Headers      | Zero                   | None              | High, softfork, WPC |
+SPV+UTXO CB            | 3      | 4        | 3       | 51%,Sy(a), b, W,Sy(p)    | Headers          | Linearly w.r.t. time   | None              | High, softfork, WPC |
+SPV36+UTXO CB          | 2      | 4        | 2       | 51%,Sy(a), b, W,Sy(p)    | 36k Headers      | Zero                   | None              | High, softfork, WPC |
+SPV+UTXO               | 4      | 3        | 4       | ?                        | Headers+UTXO     |                        | All               | Medium              |
+SPV36+UTXO             | 4      | 3        | 4       | ?                        | 36k Headers+UTXO |                        | All               | Medium              |
+SPV                    | 3      | 2        | 3       | 51%,Sy(a), b, c, W,Sy(p) | Headers          | Linearly w.r.t. time   | None              | High, WPC           |
+SPV36                  | 2      | 2        | 2       | 51%,Sy(a), b, c, W,Sy(p) | 36k Headers      | Zero                   | None              | High, WPC           |
+TS                     | 1      | 1        | 1       | T(a, b, c, d, p)         | None             | Zero                   | None              | Highest             |
+
+1=Low, 5=High
+Weight, Storage: Lower is better
+Security: Higher is better
 
 SPV: Simplified Payment Verification
 UTXO: Unspent Transaction Output Tree
@@ -345,7 +349,7 @@ A specially constructed DNS server authoritative only for .bit is run on
 the local machine. Unbound is configured to divert requests for .bit to this
 server. The server obtains Namecoin data from a node running locally.
 
-### Local Proxy-based solutions, browser extensions...
+### Local proxy-based solutions, browser extensions...
 
 ...
 
