@@ -44,29 +44,44 @@ section 2.
 Wider deployment requires viable means of developing lightweight clients. The
 following table lists all proposed node types:
 
-Node Type              | Weight | Security | Storage | Vulnerabilities          | Data Stored      | Storage Rate of Change | Name Data Stored  | Deployability       |
----------------------- | ------ | -------- | ------- | ------------------------ | ---------------- | ---------------------- | ----------------- | ------------------- |
-Full Node              | 5      | 5        | 5       | 51%,Sy(a)                | Blocks           | Increases perpetually  | All               | Low                 |
-SPV+UTXO CB+NX CB+TS   | 3      | 4        | 3       | 51%+T(a), T(p)           | Headers          | Linearly w.r.t. time   | None              | High, softfork, WPC |
-SPV36+UTXO CB+NX CB+TS | 2      | 4        | 2       | 51%+T(a), T(p)           | 36k Headers      | Zero                   | None              | High, softfork, WPC |
-SPV+UTXO CB+NX CB      | 3      | 4        | 3       | 51%,Sy(a), W,Sy(p)       | Headers          | Linearly w.r.t. time   | None              | High, softfork, WPC |
-SPV36+UTXO CB+NX CB    | 2      | 4        | 2       | 51%,Sy(a), W,Sy(p)       | 36k Headers      | Zero                   | None              | High, softfork, WPC |
-SPV+UTXO CB+TS         | 3      | 4        | 3       | 51%+T(a), T(b,p)         | Headers          | Linearly w.r.t. time   | None              | High, softfork, WPC |
-SPV36+UTXO CB+TS       | 2      | 4        | 2       | 51%+T(a), T(b,p)         | 36k Headers      | Zero                   | None              | High, softfork, WPC |
-SPV+UTXO CB            | 3      | 4        | 3       | 51%,Sy(a), b, W,Sy(p)    | Headers          | Linearly w.r.t. time   | None              | High, softfork, WPC |
-SPV36+UTXO CB          | 2      | 4        | 2       | 51%,Sy(a), b, W,Sy(p)    | 36k Headers      | Zero                   | None              | High, softfork, WPC |
-SPV+UTXO               | 4      | 3        | 4       | ?                        | Headers+UTXO     |                        | All               | Medium              |
-SPV36+UTXO             | 4      | 3        | 4       | ?                        | 36k Headers+UTXO |                        | All               | Medium              |
-SPV                    | 3      | 2        | 3       | 51%,Sy(a), b, c, W,Sy(p) | Headers          | Linearly w.r.t. time   | None              | High, WPC           |
-SPV36                  | 2      | 2        | 2       | 51%,Sy(a), b, c, W,Sy(p) | 36k Headers      | Zero                   | None              | High, WPC           |
-TS                     | 1      | 1        | 1       | T(a, b, c, d, p)         | None             | Zero                   | None              | Highest             |
+Node Type              | Weight | Security | Storage | Vulnerabilities              | Data Stored         | Storage Rate of Change | Name Data Stored   | Deployability       |
+---------------------- | ------ | -------- | ------- | ---------------------------- | ------------------- | ---------------------- | ------------------ | ------------------- |
+FN                     | 6      | 5        | 6       | 51%,Sy(a)                    | Blocks              | Increases perpetually  | All                | Lowest              |
+FN36                   | 5      | 5        | 5       | 51%,Sy(a)                    | 36k Blocks          | Based on tx volume     | All current        | Low                 |
+SPV36+UTXO CB+NX CB+TS | 2      | 4        | 2       | 51%+T(a), T(p)               | 36k Headers         | Zero                   | None               | High, softfork, WPC |
+SPV36+UTXO CB+NX CB    | 2      | 4        | 2       | 51%,Sy(a), W,Sy(p)           | 36k Headers         | Zero                   | None               | High, softfork, WPC |
+SPV36+UTXO CB+TS       | 2      | 4        | 2       | 51%+T(a), T(b,p)             | 36k Headers         | Zero                   | None               | High, softfork, WPC |
+SPV36+UTXO CB          | 2      | 4        | 2       | 51%,Sy(a), b, W,Sy(p)        | 36k Headers         | Zero                   | None               | High, softfork, WPC |
+
+SPV36+UTXO FBR S       | 4      | 3        | 4       | 51%,Sy(a)                  * | 36k Headers+UTXO    | Based on name database | Some current       | Medium              |
+SPV36+UTXO S           | 4      | 3        | 4       | 51%,Sy(a), Sy(b,c)         * | 36k Headers+UTXO    | Based on name database | Some current       | Medium              |
+
+SPV36+UTXO FBR         | 4      | 3        | 4       | 51%,Sy(a)                    | 36k Headers+UTXO    | Based on name database | All current        | Medium              |
+SPV36+UTXO             | 4      | 3        | 4       | 51%,Sy(a), Sy(b,c)           | 36k Headers+UTXO    | Based on name database | All current        | Medium              |
+
+SPV36                  | 2      | 2        | 2       | 51%,Sy(a), b, c, W,Sy(p)     | 36k Headers         | Zero                   | None               | High, WPC           |
+TS                     | 1      | 1        | 1       | T(a, b, c, d, p)             | None                | Zero                   | None               | Highest             |
+
+    * Vulnerability list accurate only for queries for names included in selection criteria.
+
+<!--
+SPV+UTXO CB+NX CB+TS   | 3      | 4        | 3       | 51%+T(a), T(p)           | Headers             | Linearly w.r.t. time   | None               | High, softfork, WPC |
+SPV+UTXO CB+NX CB      | 3      | 4        | 3       | 51%,Sy(a), W,Sy(p)       | Headers             | Linearly w.r.t. time   | None               | High, softfork, WPC |
+SPV+UTXO CB+TS         | 3      | 4        | 3       | 51%+T(a), T(b,p)         | Headers             | Linearly w.r.t. time   | None               | High, softfork, WPC |
+SPV+UTXO CB            | 3      | 4        | 3       | 51%,Sy(a), b, W,Sy(p)    | Headers             | Linearly w.r.t. time   | None               | High, softfork, WPC |
+SPV+UTXO               | 4      | 3        | 4       | ?                        | Headers+UTXO        | Based on name database | All                | Medium              |
+-->
 
 1=Low, 5=High
 Weight, Storage: Lower is better
 Security: Higher is better
 
+FN: Full Node
+SN: Selective Node
 SPV: Simplified Payment Verification
 UTXO: Unspent Transaction Output Tree
+S: Selective
+FBR: Full Block Receive
 CB: Coinbase attestation via Merkle root (enforced by softfork)
 NX: Non-expired names tree
 TS: Trusted server (e.g. with TLS)
@@ -77,11 +92,11 @@ WPC: Would require new wire protocol commands
 The chart above references vulnerabilities (i.e., bad name-related things that
 can happen) by letter. They are as follows:
 
-  a. FNV     - Forge Name Value/Steal Name (implies b, c, d)
-  b. FDoE    - Forge Denial of Existence
-  c. RNXV    - Replay Non-Expired Value
-  d. RXV     - Replay Expired Value
-  p. Privacy - Can see names accessed
+  - a. FNV     - Forge Name Value/Steal Name (implies b, c, d)
+  - b. FDoE    - Forge Denial of Existence
+  - c. RNXV    - Replay Non-Expired Value
+  - d. RXV     - Replay Expired Value
+  - p. Privacy - Can see names accessed
 
 It is useful to describe vulnerabilities in terms of the prerequisites for their exploitation.
 The following vulnerability condition codes are used:
@@ -90,6 +105,7 @@ The following vulnerability condition codes are used:
   - T - Adversary is the trustee in the TS node type
   - W - Adversary can wiretap everywhere
   - Sy - Adversary can perform Sybil attacks or MitM everywhere
+  - S - For names in selection criteria only
 
 Vulnerabilities are notated in the form Conditions(Vulnerabilities).
 A comma in the Conditions indicates 'or' and a plus indicates 'and'.
