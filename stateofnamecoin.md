@@ -70,18 +70,29 @@ SPV+UTXO               | 4      | 3        | 4       | ?                        
 -->
 
 1=Low, 5=High
+
 Weight, Storage: Lower is better
+
 Security: Higher is better
 
 FN: Full Node
+
 SN: Selective Node
+
 SPV: Simplified Payment Verification
+
 UTXO: Unspent Transaction Output Tree
+
 S: Selective
+
 FBR: Full Block Receive
+
 CB: Coinbase attestation via Merkle root (enforced by softfork)
+
 NX: Non-expired names tree
+
 TS: Trusted server (e.g. with TLS)
+
 WPC: Would require new wire protocol commands
 
 ### Charter of Vulnerabilities
