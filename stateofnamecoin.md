@@ -52,13 +52,10 @@ SPV36+UTXO CB+NX CB+TS | 2      | 4        | 2       | 51%+T(a), T(p)           
 SPV36+UTXO CB+NX CB    | 2      | 4        | 2       | 51%,Sy(a), W,Sy(p)           | 36k Headers         | Zero                   | None               | High, softfork, WPC |
 SPV36+UTXO CB+TS       | 2      | 4        | 2       | 51%+T(a), T(b,p)             | 36k Headers         | Zero                   | None               | High, softfork, WPC |
 SPV36+UTXO CB          | 2      | 4        | 2       | 51%,Sy(a), b, W,Sy(p)        | 36k Headers         | Zero                   | None               | High, softfork, WPC |
-
 SPV36+UTXO FBR S       | 4      | 3        | 4       | 51%,Sy(a)                  * | 36k Headers+UTXO    | Based on name database | Some current       | Medium              |
 SPV36+UTXO S           | 4      | 3        | 4       | 51%,Sy(a), Sy(b,c)         * | 36k Headers+UTXO    | Based on name database | Some current       | Medium              |
-
 SPV36+UTXO FBR         | 4      | 3        | 4       | 51%,Sy(a)                    | 36k Headers+UTXO    | Based on name database | All current        | Medium              |
 SPV36+UTXO             | 4      | 3        | 4       | 51%,Sy(a), Sy(b,c)           | 36k Headers+UTXO    | Based on name database | All current        | Medium              |
-
 SPV36                  | 2      | 2        | 2       | 51%,Sy(a), b, c, W,Sy(p)     | 36k Headers         | Zero                   | None               | High, WPC           |
 TS                     | 1      | 1        | 1       | T(a, b, c, d, p)             | None                | Zero                   | None               | Highest             |
 
