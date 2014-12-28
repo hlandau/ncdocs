@@ -47,19 +47,26 @@ following table lists all proposed node types:
 Node Type              | Weight | Security | Storage | Vulnerabilities              | Data Stored         | Storage Rate of Change | Name Data Stored   | Deployability       |
 ---------------------- | ------ | -------- | ------- | ---------------------------- | ------------------- | ---------------------- | ------------------ | ------------------- |
 FN                     | 6      | 5        | 6       | 51%,Sy(a)                    | Blocks              | Increases perpetually  | All                | Lowest              |
+FN-UTXO S              | 5      | 5        | 5       | 51%,Sy(a)                    | UTXO S              | Based on name database | Some current       | Low                 |
 FN36                   | 5      | 5        | 5       | 51%,Sy(a)                    | 36k Blocks          | Based on tx volume     | All current        | Low                 |
 SPV36+UTXO CB+NX CB+TS | 2      | 4        | 2       | 51%+T(a), T(p)               | 36k Headers         | Zero                   | None               | High, softfork, WPC |
 SPV36+UTXO CB+NX CB    | 2      | 4        | 2       | 51%,Sy(a), W,Sy(p)           | 36k Headers         | Zero                   | None               | High, softfork, WPC |
 SPV36+UTXO CB+TS       | 2      | 4        | 2       | 51%+T(a), T(b,p)             | 36k Headers         | Zero                   | None               | High, softfork, WPC |
 SPV36+UTXO CB          | 2      | 4        | 2       | 51%,Sy(a), b, W,Sy(p)        | 36k Headers         | Zero                   | None               | High, softfork, WPC |
-SPV36+UTXO FBR S       | 4      | 3        | 4       | 51%,Sy(a)                  * | 36k Headers+UTXO    | Based on name database | Some current       | Medium              |
-SPV36+UTXO S           | 4      | 3        | 4       | 51%,Sy(a), Sy(b,c)         * | 36k Headers+UTXO    | Based on name database | Some current       | Medium              |
-SPV36+UTXO FBR         | 4      | 3        | 4       | 51%,Sy(a)                    | 36k Headers+UTXO    | Based on name database | All current        | Medium              |
-SPV36+UTXO             | 4      | 3        | 4       | 51%,Sy(a), Sy(b,c)           | 36k Headers+UTXO    | Based on name database | All current        | Medium              |
+SPV36+UTXO FBR S       | 4      | 3        | 4       | 51%,Sy(a)                  * | 36k Headers+UTXO S  | Based on name database | Some current       | Medium              |
+SPV36+UTXO S           | 4      | 3        | 4       | 51%,Sy(a), Sy(b,c)         * | 36k Headers+UTXO S  | Based on name database | Some current       | Medium              |
+SPV36+UTXO FBR      ** | 4      | 3        | 4       | 51%,Sy(a)                    | 36k Headers+UTXO    | Based on name database | All current        | Medium              |
+SPV36+UTXO          ** | 4      | 3        | 4       | 51%,Sy(a), Sy(b,c)           | 36k Headers+UTXO    | Based on name database | All current        | Medium              |
 SPV36                  | 2      | 2        | 2       | 51%,Sy(a), b, c, W,Sy(p)     | 36k Headers         | Zero                   | None               | High, WPC           |
 TS                     | 1      | 1        | 1       | T(a, b, c, d, p)             | None                | Zero                   | None               | Highest             |
 
-    * Vulnerability list accurate only for queries for names included in selection criteria.
+    *  Vulnerability list accurate only for queries for names included in
+       selection criteria.
+
+    ** Stores all unexpired transactions, not just name transactions. Storage
+       of name transactions only can be considered a variant of UTXO S using
+       the selection criterion "any name transaction". This can be referred to
+       as UXNO (unexpired name operations).
 
 <!--
 SPV+UTXO CB+NX CB+TS   | 3      | 4        | 3       | 51%+T(a), T(p)           | Headers             | Linearly w.r.t. time   | None               | High, softfork, WPC |
@@ -173,6 +180,20 @@ include:
     scheme is complex and is broken by the compromise of any mining pool's
     key.)
 
+### Full Node 36k
+
+A full node can be made to store only the last 36,000 blocks. This reduces
+the data which must be stored without compromising the security of the full
+node in any name-relevant way.
+
+### Full Node/UTXO S
+
+In this mode, the entire block chain is received, but the storage is then
+trimmed to the UTXO set or a subset of it. Since all blocks are verified,
+this can provide superior security to SPV36+UTXO modes.
+
+TODO
+
 ### SPV
 
 An SPV client verifies block depth rather than block height. Thus a SPV client
@@ -276,7 +297,13 @@ vulnerability b becomes a problem.
 
 ### SPV+UTXO
 
-TODO
+In SPV36+UTXO, 36k headers are stored, but all name transactions in the UTXO set
+are also stored. Each name transaction is received along with proof of inclusion
+for a block.
+
+The Full Block Receive (FBR) variant of this receives full blocks instead. However
+the data stored is still the same. The vulnerabilities of this mode are equivalent
+to FN36.
 
 ### TS
 
