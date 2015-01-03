@@ -11,6 +11,8 @@ interpreted as described in RFC 2119.
 
 This document is released into the public domain.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
 - [Namecoin: Domain Names](#namecoin-domain-names)
@@ -24,14 +26,19 @@ This document is released into the public domain.
       - [Non-DNS Item Types](#non-dns-item-types)
       - [Administrative Constructs](#administrative-constructs)
       - [Experimental DNS-Compatible Item Types](#experimental-dns-compatible-item-types)
+  - [The Service Prefix Derivation Function](#the-service-prefix-derivation-function)
   - [Interpretation of DNS Names](#interpretation-of-dns-names)
   - [The WHOIS Entity Schema](#the-whois-entity-schema)
   - [Definitions of Valid Names](#definitions-of-valid-names)
-  - [Notes on DNS Subtleties](#notes-on-dns-subtleties)
+  - [Item Suppression Rules](#item-suppression-rules)
   - [Error Recovery Considerations](#error-recovery-considerations)
+  - [Definition of Base64](#definition-of-base64)
   - [Previously Deprecated Item Types](#previously-deprecated-item-types)
   - [Newly Deprecated Item Types](#newly-deprecated-item-types)
   - [Possible Future Directions](#possible-future-directions)
+  - [Bugs](#bugs)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Introduction
 ------------
@@ -846,7 +853,7 @@ example of an exception to this rule.)
 The Service Prefix Derivation Function
 --------------------------------------
 
-The function SPDF(...) is then defined as follows:
+The function SPDF(...) is defined as follows:
 
     All inputs must be `null`, strings or integers.
     Let s be the empty string.
@@ -855,10 +862,11 @@ The function SPDF(...) is then defined as follows:
       If the value is an empty string, change it to `null`.
       If the value is an integer, change it to a string containing a decimal
       ASCII encoding of that integer (without leading zeroes or whitespace).
+      The function is undefined for a value of any other type; consider this an error.
 
       If the value passed is null, continue to the next value.
       If the value passed is "*", append "*." to s.
-      Otherwise, append "_" followed by the value to s, followed by "_".
+      Otherwise, append "_" followed by the value to s, followed by ".".
 
     Return s.
 
