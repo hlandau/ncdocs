@@ -48,6 +48,9 @@ It shall have the following form:
     uint32_t      Flags (reserved; must be sent as zero and ignored on receive)
     var_str       Name (for correlation with request)
 
+The message shall be transmitted with no trailing data. Receivers shall ignore
+trailing data if it is present.
+
 Protocol
 --------
 
