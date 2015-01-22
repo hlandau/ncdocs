@@ -56,7 +56,7 @@ Protocol
 
 A SPV lightweight resolver shall resolve a name by choosing a peer and issuing
 a `getname` wire protocol command to that peer for the given name. The peer, if
-compliant with this specification, shall respond with either an `authtx`
+compliant with this specification, shall respond with either a `nametx`
 message (if a non-expired name with the given key was found) or a
 `namenotfound` message (if the name is expired or does not exist).
 
