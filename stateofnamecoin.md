@@ -40,21 +40,21 @@ The centre of the Namecoin ecosystem is the full node. The renovation of the ful
 
 Wider deployment requires viable means of developing lightweight clients. The following table lists all proposed node types:
 
-Node Type              | Weight | Security | Storage | Vulnerabilities              | Data Stored         | Storage Rate of Change | Name Data Stored   | Deployability       |
----------------------- | ------ | -------- | ------- | ---------------------------- | ------------------- | ---------------------- | ------------------ | ------------------- |
-FN                     | 6      | 5        | 6       | 51%,Sy(a)                    | Blocks              | Increases perpetually  | All                | Lowest              |
-FN-UTXO S              | 5      | 5        | 5       | 51%,Sy(a)                    | UTXO S              | Based on name database | Some current       | Low                 |
-FN-C                   | 5      | 5        | 5       | 51%,Sy(a)                    | 36k Blocks          | Based on tx volume     | All current        | Low                 |
-SPV-C+UTXO CB+NX CB+TS | 2      | 4        | 2       | 51%+T(a), T(p)               | 36k Headers         | Zero                   | None               | High, softfork, WPC |
-SPV-C+UTXO CB+NX CB    | 2      | 4        | 2       | 51%,Sy(a), W,Sy(p)           | 36k Headers         | Zero                   | None               | High, softfork, WPC |
-SPV-C+UTXO CB+TS       | 2      | 4        | 2       | 51%+T(a), T(b,p)             | 36k Headers         | Zero                   | None               | High, softfork, WPC |
-SPV-C+UTXO CB          | 2      | 4        | 2       | 51%,Sy(a), b, W,Sy(p)        | 36k Headers         | Zero                   | None               | High, softfork, WPC |
-SPV-C+UTXO FBR S       | 4      | 3        | 4       | 51%,Sy(a)                  * | 36k Headers+UTXO S  | Based on name database | Some current       | Medium              |
-SPV-C+UTXO S           | 4      | 3        | 4       | 51%,Sy(a), Sy(b,c)         * | 36k Headers+UTXO S  | Based on name database | Some current       | Medium              |
-SPV-C+UTXO FBR      ** | 4      | 3        | 4       | 51%,Sy(a)                    | 36k Headers+UTXO    | Based on name database | All current        | Medium              |
-SPV-C+UTXO          ** | 4      | 3        | 4       | 51%,Sy(a), Sy(b,c)           | 36k Headers+UTXO    | Based on name database | All current        | Medium              |
-SPV-C                  | 2      | 2        | 2       | 51%,Sy(a), b, c, W,Sy(p)     | 36k Headers         | Zero                   | None               | High, WPC           |
-TS                     | 1      | 1        | 1       | T(a, b, c, d, p)             | None                | Zero                   | None               | Highest             |
+Node Type              | Security | Storage | Vulnerabilities          | Data Stored        | Storage Rate of Change | Name Data Stored | Deployability       |
+---------------------- | -------- | ------- | ------------------------ | ------------------ | ---------------------- | ---------------- | ------------------- |
+FN                     | 5        | 6       | 51%,Sy(a)                | Blocks             | Increases perpetually  | All              | Lowest              |
+FN-UTXO S              | 5        | 5       | 51%,Sy(a)                | UTXO S             | Based on name database | Some current     | Low                 |
+FN-C                   | 5        | 5       | 51%,Sy(a)                | 36k Blocks         | Based on tx volume     | All current      | Low                 |
+SPV-C+UTXO CB+NX CB+TS | 4        | 2       | 51%+T(a), T(p)           | 36k Headers        | Zero                   | None             | High, softfork, WPC |
+SPV-C+UTXO CB+NX CB    | 4        | 2       | 51%,Sy(a), W,Sy(p)       | 36k Headers        | Zero                   | None             | High, softfork, WPC |
+SPV-C+UTXO CB+TS       | 4        | 2       | 51%+T(a), T(b,p)         | 36k Headers        | Zero                   | None             | High, softfork, WPC |
+SPV-C+UTXO CB          | 4        | 2       | 51%,Sy(a), b, W,Sy(p)    | 36k Headers        | Zero                   | None             | High, softfork, WPC |
+SPV-C+UTXO FBR S       | 3        | 4       | 51%,Sy(a)              * | 36k Headers+UTXO S | Based on name database | Some current     | Medium              |
+SPV-C+UTXO S           | 3        | 4       | 51%,Sy(a), Sy(b,c)     * | 36k Headers+UTXO S | Based on name database | Some current     | Medium              |
+SPV-C+UTXO FBR      ** | 3        | 4       | 51%,Sy(a)                | 36k Headers+UTXO   | Based on name database | All current      | Medium              |
+SPV-C+UTXO          ** | 3        | 4       | 51%,Sy(a), Sy(b,c)       | 36k Headers+UTXO   | Based on name database | All current      | Medium              |
+SPV-C                  | 2        | 2       | 51%,Sy(a), b, c, W,Sy(p) | 36k Headers        | Zero                   | None             | High, WPC           |
+TS                     | 1        | 1       | T(a, b, c, d, p)         | None               | Zero                   | None             | Highest             |
 
     *  Vulnerability list accurate only for queries for names included in
        selection criteria.
@@ -63,20 +63,14 @@ TS                     | 1      | 1        | 1       | T(a, b, c, d, p)         
        of name transactions only can be considered a variant of UTXO S using
        the selection criterion "any name transaction". This can be referred to
        as UXNO (unexpired name operations).
-
-<!--
-SPV+UTXO CB+NX CB+TS   | 3      | 4        | 3       | 51%+T(a), T(p)           | Headers             | Linearly w.r.t. time   | None               | High, softfork, WPC |
-SPV+UTXO CB+NX CB      | 3      | 4        | 3       | 51%,Sy(a), W,Sy(p)       | Headers             | Linearly w.r.t. time   | None               | High, softfork, WPC |
-SPV+UTXO CB+TS         | 3      | 4        | 3       | 51%+T(a), T(b,p)         | Headers             | Linearly w.r.t. time   | None               | High, softfork, WPC |
-SPV+UTXO CB            | 3      | 4        | 3       | 51%,Sy(a), b, W,Sy(p)    | Headers             | Linearly w.r.t. time   | None               | High, softfork, WPC |
-SPV+UTXO               | 4      | 3        | 4       | ?                        | Headers+UTXO        | Based on name database | All                | Medium              |
--->
-
-1=Low, 5=High
-
-Weight, Storage: Lower is better
-
-Security: Higher is better
+	   
+<!--                                                                                                                              
+SPV+UTXO CB+NX CB+TS   | 4        | 3       | 51%+T(a), T(p)           | Headers            | Linearly w.r.t. time   | None             | High, softfork, WPC |
+SPV+UTXO CB+NX CB      | 4        | 3       | 51%,Sy(a), W,Sy(p)       | Headers            | Linearly w.r.t. time   | None             | High, softfork, WPC |
+SPV+UTXO CB+TS         | 4        | 3       | 51%+T(a), T(b,p)         | Headers            | Linearly w.r.t. time   | None             | High, softfork, WPC |
+SPV+UTXO CB            | 4        | 3       | 51%,Sy(a), b, W,Sy(p)    | Headers            | Linearly w.r.t. time   | None             | High, softfork, WPC |
+SPV+UTXO               | 3        | 4       | ?                        | Headers+UTXO       | Based on name database | All              | Medium              |
+-->                                                                                                                               
 
 FN: Full Node
 
