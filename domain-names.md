@@ -333,49 +333,6 @@ example of an exception to this rule.)
       SHALL be substituted with an array containing that string and be processed
       as though that was what was encountered, as per the above form.
 
-  - "delegate": Similar to "import", though with different rules and less
-    powerful. Since "import" constitutes a superset of the functionality of
-    "delegate", use of "import" is often preferable. However "delegate"
-    may have wider support; therefore it may be preferable to use "delegate"
-    where the the desired outcome is achievable using it.
-
-    The key differences between "import" and "delegate" is that "delegate" can
-    import only a single other name (though that name can still recursively
-    import or delegate to other names in turn), and that the use of "delegate"
-    causes any other items in the current object to be ignored.
-
-    The other items in the current object are ignored only if the delegation is
-    processed successfully (though it does not matter if any imports or delegations
-    made by the name delegated to are themselves processed successfully.) If it
-    is not processed successfully, the other items in the current object are
-    processed normally. This allows items to be placed in the current object as a
-    sort of backup record in case the name delegated to expires.
-
-    The import recursion degree limits imposed are the same as those for the
-    "import" statement.
-
-    The value for this item SHALL be one of the following forms:
-
-    - An array of one or more values. The first value SHALL be a string expressing
-      the Namecoin name to delegate to. The second value, if present, SHALL be
-      a string expressing the Subdomain Selector, which is processed as described
-      in the specification for "import". If the second value is not present, the
-      Subdomain Selector is taken as "".
-
-      This form is the canonical form when the Subdomain Selector is explicitly
-      specified (i.e. the second value is present).
-
-    - A string. When this form is encountered, it SHALL be substituted with an
-      array containing that string and processed as though that was what was
-      encountered, as per the above form.
-
-    Examples:
-
-        "delegate": "d/example",
-        "delegate": ["d/example"],
-        "delegate": ["d/example", "www"],
-        "delegate": ["d/example", "london.england.uk"],
-
 #### DNS-Compatible Records
 
   - "ip": Used to specify zero or more IPv4 addresses. This item shall map to
@@ -1171,6 +1128,11 @@ The following item types are deprecated by this document and SHOULD NOT be used.
     information.
 
     As of writing, no domain name registered in the name database uses this item type.
+
+  - "delegate": The "import" item type provides a superset of the functionality
+    of "delegate". Further, support for "import" is as of writing greater than
+    support for "delegate", which is negligible. Thus, the "delegate" item type
+    is deprecated.
 
 Possible Future Directions
 --------------------------
