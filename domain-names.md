@@ -716,7 +716,8 @@ example of an exception to this rule.)
     The value for this item SHALL be one of the following forms:
 
     - An empty array. This denotes that hidden service connectivity is not
-      available via the current object.
+      available via the current object. This is the default semantic if the
+      "tor" item type is not present.
 
     - An array of one or more strings. Each such string SHALL contain a
       Tor onion address, including the ".onion" suffix. (Note that the value
@@ -746,10 +747,46 @@ example of an exception to this rule.)
         "tor": "http://ganeqo4kcreewkvq.onion"
         "tor": {}
 
-  - "i2p": Provides an I2P eepsite address.
-
-    TODO
+  - "i2p": Used to specify zero or more I2P eepsite addresses.
     
+    The value for this item SHALL be one of the following forms:
+
+    - An empty array. This denotes that I2P eepsite connectivity is not available
+      via the current object. This is the default semantic if the "i2p" item type
+      is not present.
+
+    - An array of one or more strings. Each such string SHALL contain
+      a base32-form I2P eepsite address, including the ".b32.i2p" suffix. (Note
+      that the value MUST NOT be an URL.) The string MUST NOT have a trailing dot.
+
+      This form denotes that the current object is mappable to any of the I2P
+      eepsites with the given addresses. Client implementations should select
+      an address in a similar fashion to the selection of IP addresses; sort the
+      addresses randomly and try them in order until all addresses are exhausted.
+
+      The address MUST be of the base32 form and MUST NOT be a friendly name
+      like "example.i2p".
+
+    - A string. Where this form is encountered, it SHALL be substituted with an
+      array containing that string and be processed as thoug that was what was
+      encountered, as per the above form.
+
+    Examples:
+
+        "i2p": []    // No eepsite available
+        "i2p": "vbcc75tfgauz5qc6tlggfduudeva755sncjyuv5sfjhy7o2ltuqq.b32.i2p"   // One eepsite available
+        "i2p": ["vbcc75tfgauz5qc6tlggfduudeva755sncjyuv5sfjhy7o2ltuqq.b32.i2p"] // One eepsite available
+        "i2p": ["vbcc75tfgauz5qc6tlggfduudeva755sncjyuv5sfjhy7o2ltuqq.b32.i2p",
+                "idphjncvywzvcjur2zeep2a44s5dxduzv7iytgihg7vdx3x5hnkq.b32.i2p"] // Two eepsites available
+
+    The following example forms are NOT valid:
+
+        "i2p": "vbcc75tfgauz5qc6tlggfduudeva755sncjyuv5sfjhy7o2ltuqq"
+        "i2p": "example.i2p"
+        "i2p": "vbcc75tfgauz5qc6tlggfduudeva755sncjyuv5sfjhy7o2ltuqq.b32.i2p."
+        "i2p": "http://vbcc75tfgauz5qc6tlggfduudeva755sncjyuv5sfjhy7o2ltuqq.b32.i2p"
+        "i2p": {}
+
   - "freenet": Provides a Freenet freesite key.
 
     The value for this item SHALL take the form of a string containing a Freenet
@@ -1160,6 +1197,10 @@ The following item types are deprecated by this document and SHOULD NOT be used.
     of "delegate". Further, support for "import" is as of writing greater than
     support for "delegate", which is negligible. Thus, the "delegate" item type
     is deprecated.
+
+  - "i2p": The format proposed previously does not appear to make sense and includes
+    extraneous fields. Since no actual implementations of that format are known, it has
+    been deprecated in favour of a format more uniform with the "tor" item type.
 
 Possible Future Directions
 --------------------------
