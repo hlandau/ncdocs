@@ -711,13 +711,40 @@ example of an exception to this rule.)
 
 #### Non-DNS Item Types
 
-  - "tor": Provides a Tor onion address.
-  
-    The value for this item SHALL take the form of a string containing a Tor
-    onion address, including the ".onion" suffix. (Note that the value MUST NOT
-    be an URL.) The string MUST NOT have a trailing dot. This value denotes
-    that the current object is mappable to a Tor hidden service with the given
-    address.
+  - "tor": Used to specify zero or more Tor hidden service addresses.
+    
+    The value for this item SHALL be one of the following forms:
+
+    - An empty array. This denotes that hidden service connectivity is not
+      available via the current object.
+
+    - An array of one or more strings. Each such string SHALL contain a
+      Tor onion address, including the ".onion" suffix. (Note that the value
+      MUST NOT be an URL.) The string MUST NOT have a trailing dot.
+      
+      This form denotes that the current object is mappable to any of the Tor
+      hidden services with the given addresses. Client implementations should
+      select an address in a similar fashion to the selection of IP addresses;
+      sort the addresses randomly and try them in order until all addresses
+      are exhausted.
+
+    - A string. Where this form is encountered, it SHALL be substituted with
+      an array containing that string and be processed as though that was what was
+      encountered, as per the above form.
+
+    Examples:
+
+        "tor": []                                                    // No hidden service available
+        "tor": "qaneqo4kcreewkvq.onion"                              // One hidden service available
+        "tor": ["xo920axk34lannrw.onion"]                            // One hidden service available
+        "tor": ["ganeqo4kcreewkvq.onion", "xo920axk34lannrw.onion"]  // Two hidden services available
+
+    The following example forms are NOT valid:
+
+        "tor": "ganeqo4kcreewkvq"
+        "tor": "ganeqo4kcreewkvq.onion."
+        "tor": "http://ganeqo4kcreewkvq.onion"
+        "tor": {}
 
   - "i2p": Provides an I2P eepsite address.
 
