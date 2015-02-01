@@ -7,8 +7,8 @@
     - [Charter of Vulnerabilities](#charter-of-vulnerabilities)
     - [Full Node](#full-node)
     - [SPV](#spv)
-    - [SPV+UTXO CB](#spvutxo-cb)
-    - [SPV+UTXO CB+NX CB](#spvutxo-cbnx-cb)
+    - [SPV+UTXO CBC](#spvutxo-cb)
+    - [SPV+UTXO CBC+UNO NX CBC](#spvutxo-cbnx-cb)
     - [SPV+UTXO](#spvutxo)
     - [TS](#ts)
   - [2. Full Node Infrastructure](#2-full-node-infrastructure)
@@ -45,10 +45,10 @@ Node Type              | Security | Storage | Vulnerabilities          | Data St
 FN                     | 5        | 6       | 51%,Sy(a)                | Blocks             | Increases perpetually  | All              | Lowest              |
 FN-UTXO S              | 5        | 5       | 51%,Sy(a)                | UTXO S             | Based on name database | Some current     | Low                 |
 FN-C                   | 5        | 5       | 51%,Sy(a)                | 36k Blocks         | Based on tx volume     | All current      | Low                 |
-SPV-C+UTXO CB+NX CB+TS | 4        | 2       | 51%+T(a), T(p)           | 36k Headers        | Zero                   | None             | High, softfork, WPC |
-SPV-C+UTXO CB+NX CB    | 4        | 2       | 51%,Sy(a), W,Sy(p)       | 36k Headers        | Zero                   | None             | High, softfork, WPC |
-SPV-C+UTXO CB+TS       | 4        | 2       | 51%+T(a), T(b,p)         | 36k Headers        | Zero                   | None             | High, softfork, WPC |
-SPV-C+UTXO CB          | 4        | 2       | 51%,Sy(a), b, W,Sy(p)    | 36k Headers        | Zero                   | None             | High, softfork, WPC |
+SPV-C+UTXO CBC+UNO NX CBC+TS | 4        | 2       | 51%+T(a), T(p)           | 36k Headers        | Zero                   | None             | High, softfork, WPC |
+SPV-C+UTXO CBC+UNO NX CBC    | 4        | 2       | 51%,Sy(a), W,Sy(p)       | 36k Headers        | Zero                   | None             | High, softfork, WPC |
+SPV-C+UTXO CBC+TS       | 4        | 2       | 51%+T(a), T(b,p)         | 36k Headers        | Zero                   | None             | High, softfork, WPC |
+SPV-C+UTXO CBC          | 4        | 2       | 51%,Sy(a), b, W,Sy(p)    | 36k Headers        | Zero                   | None             | High, softfork, WPC |
 SPV-C+UTXO FBR S       | 3        | 4       | 51%,Sy(a)              * | 36k Headers+UTXO S | Based on name database | Some current     | Medium              |
 SPV-C+UTXO S           | 3        | 4       | 51%,Sy(a), Sy(b,c)     * | 36k Headers+UTXO S | Based on name database | Some current     | Medium              |
 SPV-C+UTXO FBR      ** | 3        | 4       | 51%,Sy(a)                | 36k Headers+UTXO   | Based on name database | All current      | Medium              |
@@ -65,10 +65,10 @@ TS                     | 1        | 1       | T(a, b, c, d, p)         | None   
        as UXNO (unexpired name operations).
 	   
 <!--                                                                                                                              
-SPV+UTXO CB+NX CB+TS   | 4        | 3       | 51%+T(a), T(p)           | Headers            | Linearly w.r.t. time   | None             | High, softfork, WPC |
-SPV+UTXO CB+NX CB      | 4        | 3       | 51%,Sy(a), W,Sy(p)       | Headers            | Linearly w.r.t. time   | None             | High, softfork, WPC |
-SPV+UTXO CB+TS         | 4        | 3       | 51%+T(a), T(b,p)         | Headers            | Linearly w.r.t. time   | None             | High, softfork, WPC |
-SPV+UTXO CB            | 4        | 3       | 51%,Sy(a), b, W,Sy(p)    | Headers            | Linearly w.r.t. time   | None             | High, softfork, WPC |
+SPV+UTXO CBC+UNO NX CBC+TS   | 4        | 3       | 51%+T(a), T(p)           | Headers            | Linearly w.r.t. time   | None             | High, softfork, WPC |
+SPV+UTXO CBC+UNO NX CBC      | 4        | 3       | 51%,Sy(a), W,Sy(p)       | Headers            | Linearly w.r.t. time   | None             | High, softfork, WPC |
+SPV+UTXO CBC+TS         | 4        | 3       | 51%+T(a), T(b,p)         | Headers            | Linearly w.r.t. time   | None             | High, softfork, WPC |
+SPV+UTXO CBC            | 4        | 3       | 51%,Sy(a), b, W,Sy(p)    | Headers            | Linearly w.r.t. time   | None             | High, softfork, WPC |
 SPV+UTXO               | 3        | 4       | ?                        | Headers+UTXO       | Based on name database | All              | Medium              |
 -->                                                                                                                               
 
@@ -80,11 +80,13 @@ SPV: Simplified Payment Verification
 
 UTXO: Unspent Transaction Output Tree
 
+UNO: Unspent Name Output tree, subset of UTXO
+
 S: Selective
 
 FBR: Full Block Receive
 
-CB: Coinbase attestation via Merkle root (enforced by softfork)
+CBC: Coinbase commitment via Merkle root (enforced by softfork)
 
 NX: Non-expired names tree
 
@@ -170,9 +172,9 @@ Like a full node, SPV is vulnerable to `51%,Sy(a)`. However, SPV is also vulnera
 
 SPV-C is a variant of SPV which only stores the headers of blocks for the current registration period (currently the past 36,000 blocks). This does not appear to affect the security of clients performing name lookups. All further mentions of SPV in this document implicitly include SPV-C except where otherwise specified.
 
-### SPV+UTXO CB
+### SPV+UTXO CBC
 
-In SPV+UTXO CB, miners are upgraded to calculate a cryptographic tree data structure expressing the Unspent Transaction Output Set in a deterministic fashion (e.g. a Merkle tree). The root hash is placed in the coinbase transaction along with a magic number to make it easy to find. All other nodes verify that the included root hash is correct and reject nodes with incorrect values. Thus the depth of a block becomes a potentially reliable indicator of the consensus of the network as to the validity of the root hash contained within.
+In SPV+UTXO CBC, miners are upgraded to calculate a cryptographic tree data structure expressing the Unspent Transaction Output Set in a deterministic fashion (e.g. a Merkle tree). The root hash is placed in the coinbase transaction along with a magic number to make it easy to find. All other nodes verify that the included root hash is correct and reject nodes with incorrect values. Thus the depth of a block becomes a potentially reliable indicator of the consensus of the network as to the validity of the root hash contained within.
 
 The root hash is useful because the underlying cryptographic data structure allows the generation of a succinct proof-of-inclusion (e.g. a Merkle branch).
 
@@ -187,7 +189,7 @@ A new wire protocol command would be required, something like:
 
 This is a superset of the wire protocol functionality required for SPV described above; thus one additional command can be used to enable both modes.
 
-There are unsolved problems regarding the deployment of UTXO CB:
+There are unsolved problems regarding the deployment of UTXO CBC:
 
   - A Merkle tree can be efficiently recomputed when a value is appended to the list. But inserting or removing a value at arbitrary points in the list in general will require full recomputation.
 
@@ -201,17 +203,17 @@ There are unsolved problems regarding the deployment of UTXO CB:
 
 Instead of an Unexpired Transaction Output (UTXO) set, an Unexpired Name Output (UXNO) set could be used. However, name transactions are marked as spent once they expire, so the UTXO set contains only current name transactions (as well as non-name transactions). Thus there is no need for a separate UXNO tree.
 
-### SPV+UTXO CB+NX CB
+### SPV+UTXO CBC+UNO NX CBC
 
-NX CB further reinforces the network by creating a list of keys sorted by key and placing a root hash of some cryptographic data structure calculated over it in the coinbase. As with UTXO CB, this is verified by all nodes, and is useful only if proof-of-inclusion can be efficiently generated.
+UNO NX CBC further reinforces the network by creating a list of keys sorted by key and placing a root hash of some cryptographic data structure calculated over it in the coinbase. As with UTXO CBC, this is verified by all nodes, and is useful only if proof-of-inclusion can be efficiently generated.
 
 This allows the secure denial of existence of names by generating proofs of inclusion for adjacent items in the tree in such a way that it is proven that no names exist between them. This is similar to the strategy DNSSEC takes with NSEC/NSEC3.
 
 This reinforcement technique thus mitigates vulnerability b for a number of node types.
 
-That this would be a useful addition only when deployed in conjunction to UTXO CB. This scheme also inherits the unsolved problems posed by UTXO CB stated above.
+That this would be a useful addition only when deployed in conjunction to UTXO CBC. This scheme also inherits the unsolved problems posed by UTXO CBC stated above.
 
-Implementation of NX CB is unlikely to be a priority unless exploitation of vulnerability b becomes a problem.
+Implementation of UNO NX CBC is unlikely to be a priority unless exploitation of vulnerability b becomes a problem.
 
 ### SPV+UTXO
 
