@@ -74,7 +74,7 @@ SPV+UTXO               | 3        | 4       | ?                        | Headers
 
 FN: Full Node
 
-SN: Selective Node
+S: Selective Node
 
 SPV: Simplified Payment Verification
 
