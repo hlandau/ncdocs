@@ -535,77 +535,53 @@ example of an exception to this rule.)
 
         "ds": [[12345,8,1,"11f6ad8ec52a2984abaafd7c3b516503785c2072"]]
 
-  - "service": Used to identify zero or more service location records. This
-    item shall map to zero or more DNS resource records of type "SRV", as
-    defined in RFC 2782, and is semantically equivalent to that set of resource
-    records (once having applied the record name transformation described
-    below).
+  - "srv": Used to identity zero or more service location records. This item
+    shall map to zero or more DNS resource records of type "SRV", as defined in
+    RFC 2782, and is semantically equivalent to that set of resource records.
 
     The value for this item SHALL be of the following form:
 
     - An array of zero or more values. Each such item shall represent a SRV record,
       and SHALL be of the following form:
 
-      - An array of at least six values.
+      - An array of at least four values.
 
-        The first value SHALL be a string expressing the application name (the
-        “Service” in RFC 2782 parlance, but without the leading underscore),
-        or the string "*", or the empty string, or `null`.
-
-        The second value SHALL be a string expressing the transport protocol
-        name (the “Protocol” in RFC 2782 parlance, again without the leading
-        underscore), or the string "*", or the empty string, or `null`.
-
-        The third value SHALL be a non-negative integer expressible in 16 bits
+        The first value SHALL be a non-negative integer expressible in 16 bits
         expressing the Priority of the SRV record.
 
-        The fourth value SHALL be a non-negative integer expressible in 16 bits
+        The second value SHALL be a non-negative integer expressible in 16 bits
         expressing the Weight of the SRV record.
 
-        The fifth value SHALL be a non-negative integer expressible in 16 bits
+        The third value SHALL be a non-negative integer expressible in 16 bits
         expressing the Port Number of the SRV record.
 
-        The sixth value SHALL be a string expressing a DNS name expressing
-        the Target of the SRV record.
+        The fourth vaule SHALL be a string expressing a DNS name expressing the
+        Target of the SRV record.
 
-        Any additional values in the array beyond the first six MUST be
+        Any additional values in the array beyond the first four MUST be
         ignored.
-
-    The "service" item MUST be processed by taking the SRV records expressed by
-    it and, for each of them, prepending to the DNS record's name the string
-    which is the output of SPDF(first value in array, second value in array).
-    See the SPDF section for a definition of this function.
 
   - "tls": Used to identify zero or more TLS anchor records. This item shall
     map to zero or more DNS resource records of type "TLSA", as defined in RFC
-    6698, and is semantically equivalent to that set of resource records (once
-    having applied the record name transformation described below).
+    6698, and is semantically equivalent to that set of resource records.
 
     The value for this item SHALL be of the following form:
 
     - An array of zero or more items. Each such item shall represent a TLSA record,
       and SHALL be of the following form:
 
-      - An array of at least six values.
+      - An array of at least four values.
 
-        The first value SHALL be a string (or an integer, in which case it is
-        converted to the string which is the decimal representation of it without
-        leading zeroes) expressing the port number, or the string "*", or the
-        empty string, or `null`.
-
-        The second value SHALL be a string expressing the transport protocol name,
-        or the string "*", or the empty string, or `null`.
-
-        The third value SHALL be a non-negative integer expressible in 8 bits
+        The first value SHALL be a non-negative integer expressible in 8 bits
         expressing the Certificate Usage Field of the TLSA record (RFC 6698 s. 2.1.1).
 
-        The fourth value SHALL be a non-negative integer expressible in 8 bits
+        The second value SHALL be a non-negative integer expressible in 8 bits
         expressing the Selector Field of the TLSA record (RFC 6698 s. 2.1.2).
 
-        The fifth value SHALL be a non-negative integer expressible in 8 bits
+        The third value SHALL be a non-negative integer expressible in 8 bits
         expressing the Matching Type Field of the TLSA record (RFC 6698 s. 2.1.3).
 
-        The sixth value SHALL be a string containing the base64 encoding of the
+        The fourth value SHALL be a string containing the base64 encoding of the
         logical encoding of the Certificate Association Data Field of the TLSA
         record (RFC 6698 s. 2.1.4).
 
@@ -613,12 +589,7 @@ example of an exception to this rule.)
         Therefore this field must be converted to the correct form by decoding
         it and reencoding it using base64.
 
-        Any additional values in the array beyond the first six MUST be ignored.
-
-    The "tls" item MUST be processed by taking the TLSA records expressed by it
-    and, for each of them, prepending to the DNS record's name the string
-    which is the output of SPDF(first value in array, second value in array).
-    See the SPDF section for a definition of this function.
+        Any additional values in the array beyond the first four MUST be ignored.
 
   - "txt": Used to identify zero or more text data records. This item shall map
     to zero or more DNS resource records of type "TXT", and is semantically
@@ -676,13 +647,13 @@ example of an exception to this rule.)
         "txt": [["(a string longer than 255 bytes)"]]
 
   - MX: MX records cannot be specified directly. Instead, where a domain name
-    provides a service using the "service" item type for a service with an
-    application name of "smtp" and a transport protocol name of "tcp" (`_smtp._tcp`),
-    implementations generating DNS records MUST generate an MX record for each
-    endpoint specified for that service which specifies a port number of 25. Any
-    `_smtp._tcp` SRV record with a port number other than 25 is ignored. The MX
-    record shall be constructed using the priority and target fields of the
-    SRV record. The weight and port fields shall be discarded.
+    provides a service using the "srv" item type for a service at the relative owner name
+    of `_smtp._tcp`, implementations generating DNS records MUST generate an MX
+    record for each endpoint specified for that service which specifies a port
+    number of 25. Any `_smtp._tcp` SRV record with a port number other than 25
+    is ignored. The MX record shall be constructed using the priority and
+    target fields of the SRV record. The weight and port fields shall be
+    discarded.
 
     Implementations MUST still make the SRV records available in addition to the
     MX records.
@@ -870,38 +841,6 @@ example of an exception to this rule.)
     record types with particularly infrastructural significance. All of the
     prohibited types listed above are processed specially by DNS resolvers
     and/or authoritative servers.
-
-The Service Prefix Derivation Function
---------------------------------------
-
-The function SPDF(...) is defined as follows:
-
-    All inputs must be `null`, strings or integers.
-    Let s be the empty string.
-
-    For each value passed:
-      If the value is an empty string, change it to `null`.
-      If the value is an integer, change it to a string containing a decimal
-      ASCII encoding of that integer (without leading zeroes or whitespace).
-      The function is undefined for a value of any other type; consider this an error.
-
-      If the value passed is null, continue to the next value.
-      If the value passed is "*", append "*." to s.
-      Otherwise, append "_" followed by the value to s, followed by ".".
-
-    Return s.
-
-Example evaluations:
-
-    SPDF(  null,   null) = ""
-    SPDF("http",  "tcp") = "_http._tcp."
-    SPDF( "443",  "tcp") = "_443._tcp."
-    SPDF(   443,  "tcp") = "_443._tcp."
-    SPDF(  null,  "tcp") = "_tcp."
-    SPDF("http",   null) = "_http."
-    SPDF(   "*",  "tcp") = "*._tcp."
-    SPDF(    "",     "") = ""
-    SPDF(  null,    "*") = "*."
 
 Interpretation of DNS Names
 ---------------------------
@@ -1153,19 +1092,31 @@ The following item types are deprecated by this document and SHOULD NOT be used.
     some of the fields incorporated in the TLSA DNS record type. Since this precludes
     parity with DNS, use of this format is highly undesirable.
 
-    The proposed format was also inconsistent with the "service" (SRV) specification
-    in its denotation of subdomains. ("service" uses `[[appName, transportName, ...]]`
-    whereas the proposed "tls" format used an object mapping transport protocols to
-    objects mapping port numbers to arrays of incomplete TLSA-ish records. This
-    scheme has further problems as JSON does not support non-string keys, which
-    means the port numbers had to be denoted as strings.)
-
     As of writing, just 14 domains are attempting to make use of the (old)
     "tls" format. Of those domains, only six do so correctly, one of which has
     other configuration issues; two erroneously specify integers and not
     strings for the port number, and six appear to use an even older format:
 
         "tls": { "sha1": ["12:34:56:AB:CD:EF:..."], "enforce": "self" }
+
+  - "service": Importation occlusion is determined by (owner name, type). The use
+    of `null` items to occlude when it is desired to suppress a given item type
+    in imported data without specifying any substitute records, i.e. to occlude
+    imported data with a set of zero records of the given owner name and type.
+
+    The "service" item type is ambiguous in its expression of the empty set, because
+    they express records for more than one owner name.
+
+    For example, suppose name dd/example expresses a service `_http._tcp`. An
+    importing name d/example can override this by expressing its own service
+    `_http._tcp`, but cannot occlude `_http._tcp` service to the empty set.
+    (The SRV specification allows the use of the endpoint name `.` to denote a
+    service which is unavailable, but this inhibits hostname fallback, so this
+    is not semantically equivalent to having no SRV records.)
+
+    For this reason, the "service" item type (and the design of item types
+    incorporating owner names into the value in general) is deprecated. Use the
+    new "srv" item type instead.
 
   - "email": This is nominally intended to specify an e. mail address for insertion
     into the hostmaster field of a SOA record. However, this assumes that each
@@ -1215,22 +1166,10 @@ Possible Future Directions
     counterproductive. Thus if compression were supported, the choice would be between
     zlib and lighter formats such as Snappy or LZ4.
 
-Bugs
-----
+Changelog
+---------
 
-  - Generally, importation occlusion is determined by (owner name, type).
-    The use of `null` items is used to occlude when it is desired to suppress a given item type
-    in imported data without specifying any substitute records, i.e. to occlude imported
-    data with a set of zero records of the given owner name and type.
-
-    The "service" and "tls" item types described in this specification are ambiguous
-    in their expression of the empty set, because they express records for more than one
-    owner name.
-
-    For example, suppose name dd/example expresses a service `_http._tcp`.
-    An importing name d/example can override this by expressing its own service
-    `_http._tcp`, but cannot occlude the `_http._tcp` service to the empty set.
-    (The SRV specification allows the use of the endpoint name `.` to denote a
-     service which is unavailable, but this inhibits hostname fallback, so this
-     is not semantically equivalent to having no SRV records.)
+  - 20150516: Deprecated "service" and specified a new "srv" item type to
+    resolve occlusion ambiguity bug. The "tls" item type has been modified
+    correspondingly.
 
