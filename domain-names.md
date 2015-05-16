@@ -13,30 +13,28 @@ This document is released into the public domain.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
+**Table of Contents** 
 
-- [Namecoin: Domain Names](#namecoin-domain-names)
-  - [Introduction](#introduction)
-  - [Keys](#keys)
-  - [Values](#values)
-    - [Notes on JSON](#notes-on-json)
-    - [The Domain Name Object Schema](#the-domain-name-object-schema)
-      - [Abstract Constructs](#abstract-constructs)
-      - [DNS-Compatible Records](#dns-compatible-records)
-      - [Non-DNS Item Types](#non-dns-item-types)
-      - [Administrative Constructs](#administrative-constructs)
-      - [Experimental DNS-Compatible Item Types](#experimental-dns-compatible-item-types)
-  - [The Service Prefix Derivation Function](#the-service-prefix-derivation-function)
-  - [Interpretation of DNS Names](#interpretation-of-dns-names)
-  - [The WHOIS Entity Schema](#the-whois-entity-schema)
-  - [Definitions of Valid Names](#definitions-of-valid-names)
-  - [Item Suppression Rules](#item-suppression-rules)
-  - [Error Recovery Considerations](#error-recovery-considerations)
-  - [Definition of Base64](#definition-of-base64)
-  - [Previously Deprecated Item Types](#previously-deprecated-item-types)
-  - [Newly Deprecated Item Types](#newly-deprecated-item-types)
-  - [Possible Future Directions](#possible-future-directions)
-  - [Bugs](#bugs)
+- [Introduction](#introduction)
+- [Keys](#keys)
+- [Values](#values)
+  - [Notes on JSON](#notes-on-json)
+  - [The Domain Name Object Schema](#the-domain-name-object-schema)
+    - [Abstract Constructs](#abstract-constructs)
+    - [DNS-Compatible Records](#dns-compatible-records)
+    - [Non-DNS Item Types](#non-dns-item-types)
+    - [Administrative Constructs](#administrative-constructs)
+    - [Experimental DNS-Compatible Item Types](#experimental-dns-compatible-item-types)
+- [Interpretation of DNS Names](#interpretation-of-dns-names)
+- [The WHOIS Entity Schema](#the-whois-entity-schema)
+- [Definitions of Valid Names](#definitions-of-valid-names)
+- [Item Suppression Rules](#item-suppression-rules)
+- [Error Recovery Considerations](#error-recovery-considerations)
+- [Definition of Base64](#definition-of-base64)
+- [Previously Deprecated Item Types](#previously-deprecated-item-types)
+- [Newly Deprecated Item Types](#newly-deprecated-item-types)
+- [Possible Future Directions](#possible-future-directions)
+- [Changelog](#changelog)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
