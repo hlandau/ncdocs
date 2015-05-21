@@ -312,8 +312,7 @@ example of an exception to this rule.)
       If while processing a Subdomain Selector, a label cannot be identified in
       the "map" item at the current level, the label is substituted for the
       string "*" and the processing retried. If failure still occurs, the
-      importation process fails. [TBD: should this wildcard substitution really
-      be done?]
+      importation process fails.
 
       Any import statements at any location within a Domain Name Object being
       imported MUST be processed prior to processing the Subdomain Selector.
@@ -330,6 +329,29 @@ example of an exception to this rule.)
     - An array of strings. When this form is encountered, each string in the array
       SHALL be substituted with an array containing that string and be processed
       as though that was what was encountered, as per the above form.
+
+    - A string. When this form is encountered, each string in the array SHALL
+      be substituted with an array containing that string and be processed
+      as though that was what was encountered, as per the above form.
+
+    Examples:
+
+        // The following are all equivalent:
+        "import": "dd/other"
+        "import": ["dd/other"]
+        "import": [["dd/other"]]
+        "import": [["dd/other",""]]
+
+        // The following are all equivalent:
+        "import": ["dd/alpha", "dd/beta"]
+        "import": [["dd/alpha"], ["dd/beta"]]
+        "import": [["dd/alpha",""], ["dd/beta",""]]
+
+        // The following demonstrates use of a subdomain selector.
+        // This has the effect of importing the records which would
+        // be found at domain a.b.other.bit:
+        "import": [["d/other", "a.b"]]
+
 
 #### DNS-Compatible Records
 
