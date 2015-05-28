@@ -1,5 +1,8 @@
-Namecoin: Domain Names
-======================
+Domain Names
+============
+
+<span style="font-size:2em;font-weight:bold;"><a href="https://github.com/ifa-wg/proposals/blob/master/ifa-0001.md">This document is obsolete. The Domain Names Specification is now located in ifa-wg/proposals. This document will no longer be updated. Click here to go the current version.</a></span>
+
 
 This is a draft specification. It has no official endorsement by the Namecoin project. Do not use it; instead, use the Domain Names 2.0 specification published on the Namecoin wiki.
 
