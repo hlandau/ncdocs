@@ -20,7 +20,7 @@ REST API For Namecoin
        HTTP/1.1 200 OK
        Content-Type: application/octet-stream
        Content-Length: ...
-       Last-Modified: 2001-01-01T12:00:00Z
+       Last-Modified: Tue, 15 Nov 1994 08:12:31 GMT
        ETag: "(height)-(txid)"
 
        (name value)
@@ -37,14 +37,14 @@ REST API For Namecoin
        HTTP/1.1 200 OK
        Content-Type: application/json
        Content-Length: ...
-       Last-Modified: 2001-01-01T12:00:00Z
+       Last-Modified: Tue, 15 Nov 1994 08:12:31 GMT
        ETag: "(height)-(txid)"
 
        {
          "key": "d/example",
          "value": "(base64-encoded name data",
          "height": 200000,
-         "height_timestamp": "2001-01-01T12:00:00Z",
+         "height_timestamp": "Tue, 15 Nov 1994 08:12:31 GMT",
          "cur_height": 250000,
          "expired": false,
          "expires_in": 1000,
@@ -67,10 +67,10 @@ REST API For Namecoin
        GET /nmc/name/d%2fexample HTTP/1.1
        Host: host
        Accept: application/json
-       If-Modified-Since: 2001-01-01T12:00:00Z
+       If-Modified-Since: Tue, 15 Nov 1994 08:12:31 GMT
 
        HTTP/1.1 304 Not Modified
-       Last-Modified: 2001-01-01T12:00:00Z
+       Last-Modified: Tue, 15 Nov 1994 08:12:31 GMT
        ETag: "(height)-(txid)"
        ```
 
@@ -82,7 +82,7 @@ REST API For Namecoin
        If-None-Match: "(height)-(txid)"
 
        HTTP/1.1 304 Not Modified
-       Last-Modified: 2001-01-01T12:00:00Z
+       Last-Modified: Tue, 15 Nov 1994 08:12:31 GMT
        ETag: "(height)-(txid)"
        ```
 
