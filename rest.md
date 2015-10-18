@@ -5,6 +5,10 @@ REST API For Namecoin
 
 2. The namespace is divided via currency symbol.
 
+   The following path patterns are defined:
+
+     - `/nmc/name/{URL-encoded name key}`
+
 3. The raw value can be requested via an Accept header of `application/octet-stream`.
 
        ```
