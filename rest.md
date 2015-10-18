@@ -100,41 +100,41 @@ REST API For Namecoin
 
 10. The server responds to complex Accept headers appropriately.
 
-        ```
-        https://host/nmc/name/d%2fneverexisted
-        GET /nmc/name/d%2fneverexisted HTTP/1.1
-        Host: host
-        Accept: application/json; q=1.0, application/octet-stream; q=0.1
+    ```
+    https://host/nmc/name/d%2fneverexisted
+    GET /nmc/name/d%2fneverexisted HTTP/1.1
+    Host: host
+    Accept: application/json; q=1.0, application/octet-stream; q=0.1
 
-        HTTP/1.1 200 OK
-        Content-Type: application/json
+    HTTP/1.1 200 OK
+    Content-Type: application/json
 
-        ...
-        ```
+    ...
+    ```
 
-        ```
-        https://host/nmc/name/d%2fneverexisted
-        GET /nmc/name/d%2fneverexisted HTTP/1.1
-        Host: host
-        Accept: application/octet-stream; q=1.0, application/json; q=0.1
+    ```
+    https://host/nmc/name/d%2fneverexisted
+    GET /nmc/name/d%2fneverexisted HTTP/1.1
+    Host: host
+    Accept: application/octet-stream; q=1.0, application/json; q=0.1
 
-        HTTP/1.1 200 OK
-        Content-Type: application/octet-stream
+    HTTP/1.1 200 OK
+    Content-Type: application/octet-stream
 
-        ...
-        ```
+    ...
+    ```
 
-        ```
-        https://host/nmc/name/d%2fneverexisted
-        GET /nmc/name/d%2fneverexisted HTTP/1.1
-        Host: host
-        Accept: application/x-some-unknown
+    ```
+    https://host/nmc/name/d%2fneverexisted
+    GET /nmc/name/d%2fneverexisted HTTP/1.1
+    Host: host
+    Accept: application/x-some-unknown
 
-        HTTP/1.1 406 Not Satisfiable
-        Content-Type: text/plain
+    HTTP/1.1 406 Not Satisfiable
+    Content-Type: text/plain
 
-        Not Satisfiable
-        ```
+    Not Satisfiable
+    ```
 
 11. If both `application/octet-stream` and `application/json` are Acceptable
     and are ranked equally, `application/octet-stream` shall be preferred.
