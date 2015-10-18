@@ -7,6 +7,7 @@ REST API For Namecoin
 
 3. The raw value can be requested via an Accept header of `application/octet-stream`.
 
+       ```
        https://host/nmc/name/d%2fexample
        GET /nmc/name/d%2fexample HTTP/1.1
        Host: host
@@ -19,9 +20,11 @@ REST API For Namecoin
        ETag: "(height)-(txid)"
 
        (name value)
+       ```
 
 4. The raw value, along with metadata, can be requested via an Accept header of `application/json`.
 
+       ```
        https://host/nmc/name/d%2fexample
        GET /nmc/name/d%2fexample HTTP/1.1
        Host: host
@@ -43,6 +46,7 @@ REST API For Namecoin
          "expires_in": 1000,
          "txid": "(txid)"
        }
+       ```
 
    Base64 encoding of the value is necessary as values may contain binary data.
 
@@ -54,6 +58,7 @@ REST API For Namecoin
 
 7. HTTP conditional request semantics are supported.
 
+       ```
        https://host/nmc/name/d%2fexample
        GET /nmc/name/d%2fexample HTTP/1.1
        Host: host
@@ -63,8 +68,9 @@ REST API For Namecoin
        HTTP/1.1 304 Not Modified
        Last-Modified: 2001-01-01T12:00:00Z
        ETag: "(height)-(txid)"
+       ```
 
-
+       ```
        https://host/nmc/name/d%2fexample
        GET /nmc/name/d%2fexample HTTP/1.1
        Host: host
@@ -74,11 +80,13 @@ REST API For Namecoin
        HTTP/1.1 304 Not Modified
        Last-Modified: 2001-01-01T12:00:00Z
        ETag: "(height)-(txid)"
+       ```
 
 8. Expired names may be requested.
 
 9. Names which do not exist result in 404s as expected.
 
+       ```
        https://host/nmc/name/d%2fneverexisted
        GET /nmc/name/d%2fneverexisted HTTP/1.1
        Host: host
@@ -88,9 +96,11 @@ REST API For Namecoin
        Content-Type: text/plain
 
        Not Found
-     
+       ```
+
 10. The server responds to complex Accept headers appropriately.
 
+        ```
         https://host/nmc/name/d%2fneverexisted
         GET /nmc/name/d%2fneverexisted HTTP/1.1
         Host: host
@@ -100,8 +110,9 @@ REST API For Namecoin
         Content-Type: application/json
 
         ...
+        ```
 
-
+        ```
         https://host/nmc/name/d%2fneverexisted
         GET /nmc/name/d%2fneverexisted HTTP/1.1
         Host: host
@@ -111,8 +122,9 @@ REST API For Namecoin
         Content-Type: application/octet-stream
 
         ...
+        ```
 
-
+        ```
         https://host/nmc/name/d%2fneverexisted
         GET /nmc/name/d%2fneverexisted HTTP/1.1
         Host: host
@@ -122,6 +134,7 @@ REST API For Namecoin
         Content-Type: text/plain
 
         Not Satisfiable
+        ```
 
 11. If both `application/octet-stream` and `application/json` are Acceptable
     and are ranked equally, `application/octet-stream` shall be preferred.
